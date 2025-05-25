@@ -1,0 +1,89 @@
+.pageContainer {
+  background-color: #2e7d3232;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.backButton {
+  background: white;
+  border-radius: 50%;
+  height: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1/1;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 3%;
+  margin-bottom:10px;
+}
+
+.cardGrid {
+  display: grid;
+  height: 500px;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cardGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  border-radius: 1rem;
+  /* padding: 1rem; */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: 0.3s ease;
+  height: auto;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cardIcon {
+  background-color: #88B790;
+  color: white;
+  border-radius: 1rem 0 0 1rem;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+  width: 100%;
+  margin-right: 2rem;
+
+  border-radius: 0 50% 50% 0;
+}
+
+.cardTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1b5e20;
+}
+
+.cardDescription {
+  font-size: 0.9rem;
+  color: #1b5e20;
+}
+.backButton2 {
+  background: white;
+  border-radius: 999px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 5%;
+  height: 40px;
+  margin-top: 100px;
+  margin-right: 10px;
+  text-align: center;
+  align-items: center;justify-content: center;
+ padding-right: 30px;
+
+}
