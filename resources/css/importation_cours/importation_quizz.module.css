@@ -1,0 +1,63 @@
+.containerbox{
+
+    height: 95vh;
+    width: 100%;
+    background-color: #89B790;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.title{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    color: #fff;
+    align-items: center;
+    justify-content: start;
+    gap: 40px;
+    padding-left: 50px;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+}
+.importpdf{display: none;}
+
+.containerimportpdf{
+    height: 500px;
+    width: 80%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px;
+    gap: 40px;
+    padding-left: 50px;
+    flex-direction: column;
+    font-size: 1em;
+    border-radius: 20px;
+    color: #fff;
+    border: 5px solid #ffffff;
+}
+.containerimportpdf h1{
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+.containerimportpdf label{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1em;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    text-align: center;
+}
