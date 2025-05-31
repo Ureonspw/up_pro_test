@@ -14,6 +14,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/resumer_page', function () {
+    return Inertia::render('resumer_page/resumer_pagemain');
+})->middleware(['auth', 'verified'])->name('resumer_pagemain');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

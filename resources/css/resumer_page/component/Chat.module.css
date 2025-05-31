@@ -1,0 +1,79 @@
+.chatWindow {
+    padding-top: 24px;
+    padding-left: 100px;
+    position: relative;
+    padding-right: 100px;
+  }
+  .title{
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+  }
+  .chat {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    padding-bottom: 200px;
+  }
+  
+  .chat p {
+    border-radius: 20px;
+    margin: 2px 0;
+    font-size: 16px;
+    padding: 16px;
+    line-height: 20px;
+  }
+  
+  .loader p {
+    margin: 16px 0;
+    padding: 0;
+  }
+  
+  .user {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .user p {
+    width: 70%;
+    background-color: #88B790;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .error p {
+    font-size: 14px;
+    color: red;
+  }
+  
+  .inputArea {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    width: 70%;
+    bottom: 10px;
+    padding-left:50px;
+  }
+  
+  .inputArea button {
+    width: 120px;
+    height: 50px;
+    text-align: center;
+    box-sizing: border-box;
+    margin-left: 6px;
+    border-radius: 10px;
+    border: none;
+    background-color: #88B790;
+    color: white;
+  }
+  
+  .inputArea input {
+    height: 50px;
+    box-sizing: border-box;
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid #E2E2E2;
+    padding-left: 20px;
+  }
+  

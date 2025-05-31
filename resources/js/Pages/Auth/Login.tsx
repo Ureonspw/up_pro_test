@@ -88,7 +88,7 @@ export default function Login({
                             }
                         />
                         <span className="ms-2 text-sm text-gray-600">
-                            Remember me
+                            Remember mejjj
                         </span>
                     </label>
                 </div>

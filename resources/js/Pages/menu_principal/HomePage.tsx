@@ -25,7 +25,7 @@ const cards: CardItem[] = [
     title: "Resumer",
     description: "Resume ton cours pour un apprentissage rapide",
     icon: <PiBookOpenTextBold />,
-    path: "/resume"
+    path: "/resumer_page"
   },
   {
     title: "Questionnaire",

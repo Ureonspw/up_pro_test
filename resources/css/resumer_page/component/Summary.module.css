@@ -1,0 +1,44 @@
+.summary {
+    padding: 24px;
+    border-radius: 10px;
+    text-align: left;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 150px;
+    padding-right: 150px;
+
+  }
+  
+  .summary img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    height: 200px;
+  }
+  
+  .summary h2 {
+    font-size: 30px;
+    margin-bottom: 12px;
+    color: #89B790;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .summary p {
+    font-size: 16px;
+    line-height: 1.5;
+    border-radius: 8px;
+    border: #89B790 3px solid;
+    padding: 12px;
+    font-weight: 400;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+  
+  .summary .error {
+    color: red;
+    font-size: 14px;
+  }
+  
