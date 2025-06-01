@@ -22,9 +22,15 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/importation_quizz', function () {
-    return Inertia::render('importation_cours/importation_quizz');
-})->middleware(['auth', 'verified'])->name('importation_quizz');
+Route::get('/qcms', function () {
+    return Inertia::render('qcms/qcm_pagemain');
+})->middleware(['auth', 'verified'])->name('qcmMain');
+
+
+Route::get('/flashcard', function () {
+    return Inertia::render('flashcard/flashcard_pagemain');
+})->middleware(['auth', 'verified'])->name('Flashcard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -19,7 +19,7 @@ const cards: CardItem[] = [
     title: "Quizz",
     description: "Test tes connaissance dans un QCM ludique",
     icon: < HiOutlineAcademicCap />,
-    path: "/importation_quizz"
+    path: "/qcms"
   },
   {
     title: "Resumer",
