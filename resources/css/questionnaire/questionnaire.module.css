@@ -1,0 +1,155 @@
+*{
+    padding: 0;
+    margin: 0;
+
+}
+.containerquestionnaire{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.containerTitle{
+    height: 8vh;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    padding: 3vh;
+
+}
+.Title{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 3vh;
+}
+.heure{
+    font-size: 2vh;
+    font-weight: bold;
+    color: #409da6;
+    margin-right: 3vh;
+    border-radius: 50%;
+    width: 4.5%;
+    aspect-ratio: 1;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    position: fixed;
+    right: 0;
+    justify-content: center;
+    border: #409da6 1px solid;
+}
+
+.Questioncontainer {
+    min-height: 80vh;
+    max-height: 90vh;
+    padding: 40px;
+    width: 95%;
+    border-radius: 300px 300px 0px 0px;
+    border-top: #40a695 4px solid;
+    border-left: #88B790 1px solid;
+    border-right: #88B790 1px solid;
+    display: flex;
+    padding-top: 60px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: scroll;
+
+    /* Cache la scrollbar */
+    scrollbar-width: none; /* Firefox */
+}
+
+.Questioncontainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+
+.QuestionsPoserbloc{
+
+    height: 80%;
+    width: 85%;
+    
+}
+
+.questioncontainernum {
+    height: 22vh;
+    width: 100%;
+    display: flex;
+    align-content: start;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2vh;
+    padding: 2vh;
+
+    border-radius: 12px; /* Optionnel pour les coins arrondis */
+}
+
+.questionnum{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 4vh;
+}
+.enoncerQuestion{
+    font-size: 2.5vh;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.propreponse {
+    height: 7vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 0 1rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: background 0.3s ease-in-out;
+}
+
+
+.propreponse input {
+    border-radius: 20px;
+    width: 95%;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background-color: #f4f7f4;
+    color: #333;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 0 0 rgba(0,0,0,0);
+}
+
+.propreponse input:focus {
+    background-color: #fff;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 0 10px #88B790;
+    transform: scale(1.02);
+}
+
+/* Animation de l'input pendant qu'on tape */
+.propreponse input::placeholder {
+    color: #888;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.propreponse input:focus::placeholder {
+    opacity: 0.3;
+}
+
+/* Animation de bordure pendant la frappe */
+@keyframes typingGlow {
+    0% { box-shadow: 0 0 5px #88B790; }
+    50% { box-shadow: 0 0 15px #88B790; }
+    100% { box-shadow: 0 0 5px #88B790; }
+}
+
+.propreponse input:focus {
+    animation: typingGlow 1.5s infinite ease-in-out;
+}
+

@@ -32,6 +32,12 @@ Route::get('/flashcard', function () {
 })->middleware(['auth', 'verified'])->name('Flashcard');
 
 
+
+Route::get('/questionnaire', function () {
+    return Inertia::render('questionnaire/questionnaire');
+})->middleware(['auth', 'verified'])->name('Questionnaire');
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

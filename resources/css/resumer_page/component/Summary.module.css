@@ -42,3 +42,12 @@
     font-size: 14px;
   }
   
+  .summaryContent {
+    white-space: pre-wrap; /* Conserve les sauts de ligne */
+    font-family: monospace; /* Optionnel : police monospace pour un look propre */
+    padding: 1rem;
+    border: #89B790 3px solid;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  

@@ -105,9 +105,9 @@ function Chat({ file }: ChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="text"
-          placeholder="Ask any question about the uploaded document..."
+          placeholder="Posez votre question ici a propos du document"
         />
-        <button onClick={handleSendMessage}>Send</button>
+        <button onClick={handleSendMessage}>Envoyer</button>
       </div>
     </section>
 
