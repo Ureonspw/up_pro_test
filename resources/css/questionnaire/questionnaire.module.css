@@ -27,21 +27,28 @@
     font-weight: bold;
     font-size: 3vh;
 }
-.heure{
+.soummission{
     font-size: 2vh;
     font-weight: bold;
     color: #409da6;
     margin-right: 3vh;
-    border-radius: 50%;
-    width: 4.5%;
-    aspect-ratio: 1;
+    border-radius: 40px;
+    width: 8%;
+    height: 35px;
     display: flex;
     align-content: center;
+    cursor: pointer;
     align-items: center;
     position: fixed;
     right: 0;
     justify-content: center;
     border: #409da6 1px solid;
+    transition: all 0.1s ease-in-out;
+}
+.soummission:hover{
+    background-color: #409da6;
+    color: white;
+    transform: scale(1.1);
 }
 
 .Questioncontainer {
@@ -153,3 +160,72 @@
     animation: typingGlow 1.5s infinite ease-in-out;
 }
 
+
+
+/* Loader : Génération des questions en cours... */
+.loader {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a90e2;
+    margin: 2rem auto;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  /* Résumé */
+  .summary {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  
+  .summary h2 {
+    font-size: 2rem;
+    color: #4a90e2;
+    margin-bottom: 1rem;
+  }
+  
+  .summary p {
+    font-size: 1.2rem;
+    margin: 0.8rem 0;
+    color: #333;
+  }
+  
+  .summary p:first-of-type {
+    font-weight: bold;
+    font-size: 1.4rem;
+  }
+  
+  .summary p:nth-of-type(2) {
+    color: #27ae60; /* vert positif */
+  }
+  
+  .summary p:nth-of-type(2):has(:contains("progresser")) {
+    color: #e67e22; /* orange motivant */
+  }
+  
+  .summary button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .summary button:hover {
+    background-color: #357ABD;
+  }
+  

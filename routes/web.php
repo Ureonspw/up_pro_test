@@ -34,7 +34,7 @@ Route::get('/flashcard', function () {
 
 
 Route::get('/questionnaire', function () {
-    return Inertia::render('questionnaire/questionnaire');
+    return Inertia::render('questionnaire/questionnaire_pagemain');
 })->middleware(['auth', 'verified'])->name('Questionnaire');
 
 
