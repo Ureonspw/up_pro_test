@@ -188,7 +188,7 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
     const pdfUrl = URL.createObjectURL(pdfBlob);
     localStorage.setItem("pdfUrl", pdfUrl);
 
-    window.location.href = "/enregistrement_page";
+    window.location.href = "/enregistrement_page"; 
   };
 
   if (loading) {

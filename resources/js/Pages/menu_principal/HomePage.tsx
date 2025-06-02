@@ -37,7 +37,7 @@ const cards: CardItem[] = [
     title: "FlashCard",
     description: "Révise rapidement pour vérifier si tu maîtrises les notions essentielles",
     icon: <FaRegFileLines />,
-    path: "/flashcard"
+    path: "/import_prof"  //a modifier plutard en flashcard
   },
 ];
 

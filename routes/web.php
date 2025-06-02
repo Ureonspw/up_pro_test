@@ -45,11 +45,17 @@ Route::get('/discussion_ia', function () {
 
 Route::get('/enregistrement_page', function () {
     return Inertia::render('enregistrement_page/enregistrer_fichier');
-})->middleware(['auth', 'verified'])->name('enregistrement_page');
+})->middleware(['auth', 'verified'])->name('enregistrement_fichier');
 
 Route::get('/historique_pages', function () {
     return Inertia::render('historique_pages/historique_pages');
 })->middleware(['auth', 'verified'])->name('historique_pages');
+
+
+Route::get('/import_prof', function () {
+    return Inertia::render('professeur/enregistrementPro_pagemain');
+})->middleware(['auth', 'verified'])->name('import_prof');
+
 
 
 Route::middleware('auth')->group(function () {
