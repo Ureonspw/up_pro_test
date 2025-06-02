@@ -98,6 +98,7 @@ function Chat({ file }: ChatProps) {
             </div>
           ))}
         </div>
+        
       )}
 
       <div className={styles.inputArea}>

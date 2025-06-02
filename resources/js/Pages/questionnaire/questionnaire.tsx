@@ -95,6 +95,8 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
           <p>Tu peux encore progresser ! N'hésite pas à relire le document 📖</p>
         )}
         <button onClick={() => window.location.reload()}>Refaire</button>
+        <button onClick={() => window.location.href = "/resumer_page"}>Retour</button>
+        <button onClick={() => window.location.href = "/enregistrement_page"}>Enregistrer</button>
       </div>
     );
   }

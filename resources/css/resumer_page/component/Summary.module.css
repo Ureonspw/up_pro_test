@@ -51,3 +51,23 @@
     overflow-x: auto;
   }
   
+  .enregistrer{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #89B790;
+    height: 6vh;
+    margin-top: 3vh;
+    cursor: pointer;
+    border-radius: 20px;
+    border: #89B790 2px solid;
+    width: 20%;
+    transition: 0.2s ease-in-out;
+  }
+    .enregistrer:hover{
+  
+  background-color: #89B790;
+  transform: scale(1.1);
+  color:azure;
+  
+  }

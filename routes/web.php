@@ -42,6 +42,13 @@ Route::get('/discussion_ia', function () {
 })->middleware(['auth', 'verified'])->name('discussion_ia');
 
 
+
+Route::get('/enregistrement_page', function () {
+    return Inertia::render('enregistrement_page/enregistrer_fichier');
+})->middleware(['auth', 'verified'])->name('discussion_ia');
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
