@@ -45,8 +45,11 @@ Route::get('/discussion_ia', function () {
 
 Route::get('/enregistrement_page', function () {
     return Inertia::render('enregistrement_page/enregistrer_fichier');
-})->middleware(['auth', 'verified'])->name('discussion_ia');
+})->middleware(['auth', 'verified'])->name('enregistrement_page');
 
+Route::get('/historique_pages', function () {
+    return Inertia::render('historique_pages/historique_pages');
+})->middleware(['auth', 'verified'])->name('historique_pages');
 
 
 Route::middleware('auth')->group(function () {

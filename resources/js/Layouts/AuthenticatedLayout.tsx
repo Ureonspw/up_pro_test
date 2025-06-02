@@ -36,12 +36,12 @@ export default function Authenticated({
                                 <NavLink
                                     href={route('discussion_ia')}
                                     active={route().current('discussion_ia')}
-                                >
+                                > 
                                     Discussion ia
                                 </NavLink>
                                 <NavLink
-                                    href={route('login')}
-                                    active={route().current('dashboard')}
+                                    href={route('historique_pages')}
+                                    active={route().current('historique_pages')}
                                 >
                                     historique des questionnaires
                                 </NavLink>
