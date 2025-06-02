@@ -37,6 +37,10 @@ Route::get('/questionnaire', function () {
     return Inertia::render('questionnaire/questionnaire_pagemain');
 })->middleware(['auth', 'verified'])->name('Questionnaire');
 
+Route::get('/discussion_ia', function () {
+    return Inertia::render('discussion_ia/Chatglobal');
+})->middleware(['auth', 'verified'])->name('discussion_ia');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

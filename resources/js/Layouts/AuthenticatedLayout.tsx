@@ -34,10 +34,10 @@ export default function Authenticated({
                                     menu principal
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('discussion_ia')}
+                                    active={route().current('discussion_ia')}
                                 >
-                                    Discussion
+                                    Discussion ia
                                 </NavLink>
                                 <NavLink
                                     href={route('login')}
