@@ -80,54 +80,52 @@ function EnregistrementPage({ uploadedFile }: EnregistrementPageProps): JSX.Elem
   ]
 
   return (
-    <div className={styles.pageWrapper}>
-      <div className={styles.container} style={{ position: 'relative', minHeight: '100vh' }}>
-        <button className={styles['back-btn']} aria-label="Retour">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="13" fill="none"/>
-            <path d="M17 8L11 14L17 20" stroke="#388e5a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <div className={styles['main-card']}>
-          <div className={styles['left-rect']}>
-            <iframe
-              src={pdfUrl || disciplinePDFs[discipline]}
-              title="Aperçu PDF"
-              style={{ width: '100%', height: '100%' }}
-            />
+    <div className={`${styles.page} ${styles.container}`} style={{ position: 'relative', minHeight: '100vh' }}>
+      <button className={styles['back-btn']} aria-label="Retour">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" fill="none"/>
+          <path d="M17 8L11 14L17 20" stroke="#388e5a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+      <div className={styles['main-card']}>
+        <div className={styles['left-rect']}>
+          <iframe
+            src={pdfUrl || disciplinePDFs[discipline]}
+            title="Aperçu PDF"
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
+        <div className={styles['form-section']}>
+          <label>NOM DE FICHIER :</label>
+          <input type="text" className={styles['file-name']} placeholder='Entrez le nom du fichier'/>
+          <label>METHODE :</label>
+          <div className={styles['method-icons']}>
+            {methods.map((m, i) => (
+              <div
+                key={i}
+                className={`${styles['method-icon']} ${selectedMethod === i ? styles['selected'] : ''}`}
+                onClick={() => setSelectedMethod(i)}
+                title={m.label}
+              >
+                {m.icon}
+              </div>
+            ))}
           </div>
-          <div className={styles['form-section']}>
-            <label>NOM DE FICHIER :</label>
-            <input type="text" className={styles['file-name']} placeholder='Entrez le nom du fichier'/>
-            <label>METHODE :</label>
-            <div className={styles['method-icons']}>
-              {methods.map((m, i) => (
-                <div
-                  key={i}
-                  className={`${styles['method-icon']} ${selectedMethod === i ? styles['selected'] : ''}`}
-                  onClick={() => setSelectedMethod(i)}
-                  title={m.label}
-                >
-                  {m.icon}
-                </div>
-              ))}
-            </div>
-            <label>DISCIPLINE :</label>
-            <br />
-            <select 
-              value={discipline} 
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDiscipline(e.target.value)}
-            >
-              <option>Informatique</option>
-              <option>java</option>
-              <option>reseau</option>
-              <option>secu</option>
-            </select>
-            <br />
-            <button className={styles['save-btn']}>Enregistrer</button>
-            <button className={styles['save-btn']}>sauvegarder</button>
+          <label>DISCIPLINE :</label>
+          <br />
+          <select 
+            value={discipline} 
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDiscipline(e.target.value)}
+          >
+            <option>Informatique</option>
+            <option>java</option>
+            <option>reseau</option>
+            <option>secu</option>
+          </select>
+          <br />
+          <button className={styles['save-btn']}>Enregistrer</button>
+          <button className={styles['save-btn']}>sauvegarder</button>
 
-          </div>
         </div>
       </div>
     </div>
