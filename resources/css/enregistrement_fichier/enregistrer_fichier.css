@@ -109,14 +109,48 @@ body::before {
   letter-spacing: 1px;
 }
 
-.form-section .file-name {
+.form-section {
   font-size: 1.3rem;
   font-weight: bold;
   margin: 0.5rem 0 1.2rem 0;
   border-bottom: 2px solid #fff;
   padding-bottom: 0.3rem;
   width: 70%;
+  display: flex;
+  align-content: start;
+  align-items: start;
+  justify-content: center;
+  flex-direction: column;
 }
+
+
+.file-name  {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0.5rem 0 1.2rem 0;
+  padding: 0.5rem 1rem;
+  width: 70%;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.file-name::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.file-name:focus {
+  border-color: #00bcd4;
+  box-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
+  background: rgba(0, 188, 212, 0.1);
+}
+
+
 
 /* METHOD ICONS */
 .method-icons {

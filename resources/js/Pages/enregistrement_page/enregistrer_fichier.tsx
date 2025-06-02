@@ -90,7 +90,7 @@ function enregistrement_page(): JSX.Element {
         </div>
         <div className="form-section">
           <label>NOM DE FICHIER :</label>
-          <div className="file-name">Fiche de Revision 12</div>
+          <input type="text" className='file-name' placeholder='Entrez le nom du fichier'/>
           <label>METHODE :</label>
           <div className="method-icons">
             {methods.map((m, i) => (
