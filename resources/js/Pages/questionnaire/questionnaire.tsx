@@ -1,6 +1,7 @@
 // Questionnaire.tsx
 import { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import Classes from "../../../css/questionnaire/questionnaire.module.css";
 
 interface QuestionData {
@@ -16,6 +17,103 @@ interface FileProps {
 interface QuestionnaireProps {
   file: FileProps;
 }
+
+// Convertit un Blob en base64
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+// Génère le PDF des questions/réponses avec gestion du retour à la ligne
+async function generatePdf(questions: QuestionData[]): Promise<Blob> {
+  const pdfDoc = await PDFDocument.create();
+  let page = pdfDoc.addPage([595, 842]); // Format A4
+
+  const { width, height } = page.getSize();
+  const margin = 40;
+  const lineHeight = 18;
+  let y = height - margin;
+
+  const titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const contentFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const footerFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+
+  const maxWidth = width - 2 * margin;
+
+  // Fonction utilitaire : découpe une ligne trop longue
+  function splitText(text: string, font: any, fontSize: number): string[] {
+    const words = text.split(" ");
+    let lines: string[] = [];
+    let currentLine = "";
+
+    words.forEach(word => {
+      const testLine = currentLine + word + " ";
+      const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+      if (testWidth > maxWidth) {
+        lines.push(currentLine.trim());
+        currentLine = word + " ";
+      } else {
+        currentLine = testLine;
+      }
+    });
+
+    if (currentLine) lines.push(currentLine.trim());
+    return lines;
+  }
+
+  // Titre du document
+  page.drawText("e~Learning - Questionnaire", {
+    x: margin,
+    y: y - 10,
+    size: 20,
+    font: titleFont,
+    color: rgb(0.1, 0.7, 0.3),
+  });
+
+  y -= 40;
+
+  const fontSize = 12;
+
+  questions.forEach((q, index) => {
+    const questionLines = splitText(`Question ${index + 1}: ${q.question}`, contentFont, fontSize);
+    const answerLines = splitText(`Réponse: ${q.answer}`, contentFont, fontSize);
+
+    const totalLines = questionLines.length + answerLines.length + 1;
+
+    if (y < margin + totalLines * lineHeight) {
+      page = pdfDoc.addPage([595, 842]);
+      y = height - margin;
+    }
+
+    questionLines.forEach(line => {
+      page.drawText(line, { x: margin, y, size: fontSize, font: contentFont, color: rgb(0, 0, 0) });
+      y -= lineHeight;
+    });
+
+    answerLines.forEach(line => {
+      page.drawText(line, { x: margin + 20, y, size: fontSize, font: contentFont, color: rgb(0.3, 0.3, 0.3) });
+      y -= lineHeight;
+    });
+
+    y -= lineHeight / 2; // Petit espace entre les questions
+  });
+
+  // Pied de page
+  page.drawText("Fiche Questionnaire", {
+    x: margin,
+    y: margin - 10,
+    size: 10,
+    font: footerFont,
+    color: rgb(0.5, 0.5, 0.5),
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  return new Blob([pdfBytes], { type: "application/pdf" });
+}
+
 
 function Questionnaire({ file }: QuestionnaireProps) {
   const [questions, setQuestions] = useState<QuestionData[]>([]);
@@ -52,7 +150,7 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
         text = text.replace(/```json|```/g, "").trim();
         const parsed = JSON.parse(text) as QuestionData[];
         setQuestions(parsed);
-        setUserAnswers(Array(parsed.length).fill("")); // tableau des réponses utilisateur
+        setUserAnswers(Array(parsed.length).fill(""));
       } catch (err) {
         console.error("Erreur lors de la génération :", err);
       } finally {
@@ -80,6 +178,19 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
     setShowSummary(true);
   };
 
+  const handleSave = async () => {
+    if (!questions.length) return;
+
+    const pdfBlob = await generatePdf(questions);
+    const pdfBase64 = await blobToBase64(pdfBlob);
+    localStorage.setItem("pdfBase64", pdfBase64);
+
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    localStorage.setItem("pdfUrl", pdfUrl);
+
+    window.location.href = "/enregistrement_page";
+  };
+
   if (loading) {
     return <div className={Classes.loader}>Génération des questions en cours...</div>;
   }
@@ -95,8 +206,7 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
           <p>Tu peux encore progresser ! N'hésite pas à relire le document 📖</p>
         )}
         <button onClick={() => window.location.reload()}>Refaire</button>
-        <button onClick={() => window.location.href = "/resumer_page"}>Retour</button>
-        <button onClick={() => window.location.href = "/enregistrement_page"}>Enregistrer</button>
+        <button onClick={handleSave}>Enregistrer</button>
       </div>
     );
   }
