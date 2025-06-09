@@ -7,7 +7,8 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { FaUser, FaLock } from "react-icons/fa";
-// import styles from '../../../css/login/LoginForm.module.css';
+import styles from '../../../css/login/LoginForm.module.css';
+
 export default function Login({
     status,
     canResetPassword,
@@ -43,7 +44,7 @@ export default function Login({
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="ee" />
+                    <InputLabel htmlFor="email" value="email" />
 
                     <TextInput
                         id="email"

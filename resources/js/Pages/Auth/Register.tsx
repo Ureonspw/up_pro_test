@@ -6,10 +6,23 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Register() {
+type Role = {
+    id_role: number;
+    libelle: string;
+};
+
+type RegisterProps = {
+    roles: Role[];
+};
+
+export default function Register({roles}: RegisterProps){
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
+        prenom:'',
+        id_role:'',
+        sexe:'',
+        tel:'',
         password: '',
         password_confirmation: '',
     });
@@ -60,6 +73,78 @@ export default function Register() {
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
+
+
+{/* Champ Prénom */}
+<div>
+    <InputLabel htmlFor="prenom" value="prenom" />
+    <TextInput
+        id="prenom"
+        name="prenom"
+        value={data.prenom}
+        className="mt-1 block w-full"
+        onChange={(e) => setData('prenom', e.target.value)}
+        required
+    />
+    <InputError message={errors.prenom} className="mt-2" />
+</div>
+
+{/* Champ Sexe */}
+<div className="mt-4">
+    <InputLabel htmlFor="sexe" value="sexe" />
+    <select
+        id="sexe"
+        name="sexe"
+        value={data.sexe}
+        onChange={(e) => setData('sexe', e.target.value)}
+        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+        required
+    >
+        <option value="">Sélectionner</option>
+        <option value="Masculin">Homme</option>
+        <option value="Féminin">Femme</option>
+
+    </select>
+    <InputError message={errors.sexe} className="mt-2" />
+</div>
+
+{/* Champ Téléphone */}
+<div className="mt-4">
+    <InputLabel htmlFor="tel" value="téléphone" />
+    <TextInput
+        id="tel"
+        name="tel"
+        value={data.tel}
+        className="mt-1 block w-full"
+        onChange={(e) => setData('tel', e.target.value)}
+        required
+    />
+    <InputError message={errors.tel} className="mt-2" />
+</div>
+
+<div>
+    <InputLabel htmlFor="id_role" value="Rôle" />
+
+    <select
+        id="id_role"
+        name="id_role"
+        value={data.id_role}
+        onChange={e => setData('id_role', e.target.value)}
+        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+        required
+    >
+        <option value="">-- Choisissez un rôle --</option>
+        {roles.map((role) => (
+            <option key={role.id_role} value={role.id_role}>
+                {role.libelle}
+            </option>
+        ))}
+    </select>
+
+    <InputError message={errors.id_role} className="mt-2" />
+</div>
+
+
 
                 <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />

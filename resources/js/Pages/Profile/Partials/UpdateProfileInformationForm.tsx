@@ -20,7 +20,10 @@ export default function UpdateProfileInformation({
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,
+            prenom: user.prenom || '',
             email: user.email,
+            sexe: user.sexe || '',
+            tel: user.tel || '',
         });
 
     const submit: FormEventHandler = (e) => {
@@ -42,6 +45,7 @@ export default function UpdateProfileInformation({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                {/* Name */}
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -58,6 +62,23 @@ export default function UpdateProfileInformation({
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
+                {/* Prenom */}
+                <div>
+                    <InputLabel htmlFor="prenom" value="Prénom" />
+
+                    <TextInput
+                        id="prenom"
+                        className="mt-1 block w-full"
+                        value={data.prenom}
+                        onChange={(e) => setData('prenom', e.target.value)}
+                        required
+                        autoComplete="given-name"
+                    />
+
+                    <InputError className="mt-2" message={errors.prenom} />
+                </div>
+
+                {/* Email */}
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -72,6 +93,42 @@ export default function UpdateProfileInformation({
                     />
 
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                {/* Sexe */}
+                <div>
+                    <InputLabel htmlFor="sexe" value="Sexe" />
+
+                    <select
+                        id="sexe"
+                        name="sexe"
+                        value={data.sexe}
+                        onChange={(e) => setData('sexe', e.target.value)}
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                        required
+                    >
+                        <option value="">Sélectionner</option>
+                        <option value="Homme">Homme</option>
+                        <option value="Femme">Femme</option>
+                    </select>
+
+                    <InputError className="mt-2" message={errors.sexe} />
+                </div>
+
+                {/* Téléphone */}
+                <div>
+                    <InputLabel htmlFor="tel" value="Téléphone" />
+
+                    <TextInput
+                        id="tel"
+                        className="mt-1 block w-full"
+                        value={data.tel}
+                        onChange={(e) => setData('tel', e.target.value)}
+                        required
+                        autoComplete="tel"
+                    />
+
+                    <InputError className="mt-2" message={errors.tel} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
@@ -107,9 +164,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
-                            Saved.
-                        </p>
+                        <p className="text-sm text-gray-600">Saved.</p>
                     </Transition>
                 </div>
             </form>

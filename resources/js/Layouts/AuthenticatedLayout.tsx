@@ -34,16 +34,27 @@ export default function Authenticated({
                                     menu principal
                                 </NavLink>
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('discussion_ia')}
+                                    active={route().current('discussion_ia')}
                                 >
                                     Discussion
                                 </NavLink>
                                 <NavLink
-                                    href={route('login')}
-                                    active={route().current('dashboard')}
+                                    href={route('historique_pages')}
+                                    active={route().current('historique_pages')}
                                 >
                                     historique des questionnaires
+                                </NavLink>
+                                <NavLink
+                                    href={route('pages_publiques')}
+                                    active={route().current('pages_publiques')}
+                                >
+                                    Pdf Profs publics
+                                </NavLink><NavLink
+                                    href={route('videos')}
+                                    active={route().current('videos')}
+                                >
+                                    videos
                                 </NavLink>
                             </div>
                         </div>

@@ -19,13 +19,13 @@ const cards: CardItem[] = [
     title: "Quizz",
     description: "Test tes connaissance dans un QCM ludique",
     icon: < HiOutlineAcademicCap />,
-    path: "/importation_quizz"
+    path: "/qcms"
   },
   {
     title: "Resumer",
     description: "Resume ton cours pour un apprentissage rapide",
     icon: <PiBookOpenTextBold />,
-    path: "/resume"
+    path: "/resumer_page"
   },
   {
     title: "Questionnaire",

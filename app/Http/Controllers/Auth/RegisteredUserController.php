@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,15 +17,19 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Affiche la vue d'inscription.
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $roles = Role::all(['id_role', 'libelle']); // Récupère tous les rôles
+
+        return Inertia::render('Auth/Register', [
+            'roles' => $roles,
+        ]);
     }
 
     /**
-     * Handle an incoming registration request.
+     * Gère la requête d'inscription.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -32,19 +37,30 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'prenom' => 'required|string|max:255',
+            'sexe' => 'required|in:Masculin,Féminin,Autre',
+            'tel' => 'required|string|max:20',
+            'id_role' => 'required|exists:roles,id_role',
+            'email' => 'required|string|lowercase|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'prenom' => $request->prenom,
+            'sexe' => $request->sexe,
+            'tel' => $request->tel,
+            'id_role' => $request->id_role,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'statut'=>'actif',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        
 
         return redirect(route('dashboard', absolute: false));
     }
