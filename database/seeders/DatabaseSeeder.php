@@ -13,6 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Créer les données de base en premier
+        $this->call([
+            TypeIaSeeder::class,
+            TypeDocSeeder::class,
+            BasicDataSeeder::class,
+        ]);
+
         // User::factory(10)->create();
 
         User::factory()->create([

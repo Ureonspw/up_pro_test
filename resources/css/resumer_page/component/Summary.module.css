@@ -1,73 +1,353 @@
-.summary {
-    padding: 24px;
-    border-radius: 10px;
-    text-align: left;
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding-left: 150px;
-    padding-right: 150px;
+/* Container principal */
+.summaryContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
 
+/* En-tête avec image et titre */
+.header {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.previewImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-right: 24px;
+  border: 3px solid #89B790;
+  box-shadow: 0 4px 16px rgba(137, 183, 144, 0.3);
+}
+
+.headerInfo {
+  flex: 1;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #89B790, #5a7c60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fileName {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Section de chargement */
+.loadingSection {
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  padding: 48px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.loadingSection p {
+  margin-top: 16px;
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Container des sections */
+.sectionsContainer {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+/* Cartes de section */
+.sectionCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.sectionCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.sectionCard:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #89B790, #5a7c60);
+}
+
+/* En-tête de section */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px 16px 24px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sectionIcon {
+  font-size: 1.8rem;
+  color: #89B790;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(137, 183, 144, 0.1);
+  border-radius: 10px;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+/* Contenu de section */
+.sectionContent {
+  padding: 24px;
+  line-height: 1.6;
+}
+
+.contentLine {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #495057;
+  text-align: justify;
+}
+
+.contentLine:last-child {
+  margin-bottom: 0;
+}
+
+.codeLine {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-left: 4px solid #89B790;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 8px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Section d'erreur */
+.errorSection {
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  padding: 48px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  font-size: 1.2rem;
+  color: #dc3545;
+  margin: 0 0 24px 0;
+  font-weight: 600;
+}
+
+.retryButton {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
+}
+
+.retryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* Section d'action */
+.actionSection {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #89B790, #5a7c60);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(137, 183, 144, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saveButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(137, 183, 144, 0.4);
+  background: linear-gradient(135deg, #5a7c60, #89B790);
+}
+
+.saveButton:active {
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .summaryContainer {
+    padding: 16px;
   }
   
-  .summary img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    height: 200px;
-  }
-  
-  .summary h2 {
-    font-size: 30px;
-    margin-bottom: 12px;
-    color: #89B790;
-    font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .summary p {
-    font-size: 16px;
-    line-height: 1.5;
-    border-radius: 8px;
-    border: #89B790 3px solid;
-    padding: 12px;
-    font-weight: 400;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  }
-  
-  .summary .error {
-    color: red;
-    font-size: 14px;
-  }
-  
-  .summaryContent {
-    white-space: pre-wrap; /* Conserve les sauts de ligne */
-    font-family: monospace; /* Optionnel : police monospace pour un look propre */
-    padding: 1rem;
-    border: #89B790 3px solid;
-    border-radius: 8px;
-    overflow-x: auto;
-  }
-  
-  .enregistrer{
+  .header {
+    flex-direction: column;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #89B790;
-    height: 6vh;
-    margin-top: 3vh;
-    cursor: pointer;
-    border-radius: 20px;
-    border: #89B790 2px solid;
-    width: 20%;
-    transition: 0.2s ease-in-out;
+    padding: 20px;
   }
-    .enregistrer:hover{
   
-  background-color: #89B790;
-  transform: scale(1.1);
-  color:azure;
-  
+  .previewImage {
+    margin-right: 0;
+    margin-bottom: 16px;
   }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .sectionsContainer {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .sectionCard {
+    margin: 0;
+  }
+  
+  .sectionHeader {
+    padding: 16px 20px 12px 20px;
+  }
+  
+  .sectionContent {
+    padding: 20px;
+  }
+  
+  .sectionTitle {
+    font-size: 1.2rem;
+  }
+  
+  .saveButton {
+    padding: 14px 24px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .summaryContainer {
+    padding: 12px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .sectionHeader {
+    padding: 12px 16px 8px 16px;
+  }
+  
+  .sectionContent {
+    padding: 16px;
+  }
+  
+  .sectionIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.4rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionCard {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.sectionCard:nth-child(1) { animation-delay: 0.1s; }
+.sectionCard:nth-child(2) { animation-delay: 0.2s; }
+.sectionCard:nth-child(3) { animation-delay: 0.3s; }
+.sectionCard:nth-child(4) { animation-delay: 0.4s; }
+.sectionCard:nth-child(5) { animation-delay: 0.5s; }
+
+/* Amélioration de l'accessibilité */
+.saveButton:focus,
+.retryButton:focus {
+  outline: 3px solid rgba(137, 183, 144, 0.5);
+  outline-offset: 2px;
+}
+
+/* Scrollbar personnalisée */
+.codeLine::-webkit-scrollbar {
+  height: 6px;
+}
+
+.codeLine::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.codeLine::-webkit-scrollbar-thumb {
+  background: #89B790;
+  border-radius: 3px;
+}
+
+.codeLine::-webkit-scrollbar-thumb:hover {
+  background: #5a7c60;
+}

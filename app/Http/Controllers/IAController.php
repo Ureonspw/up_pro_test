@@ -22,11 +22,26 @@ class IAController extends Controller
                 'id_doc' => 'required|integer'
             ]);
 
+            // Vérifier si le document existe, sinon créer un document par défaut
+            $document = Document::find($request->id_doc);
+            if (!$document) {
+                // Créer un document par défaut si nécessaire
+                $document = Document::create([
+                    'nom' => 'Document généré pour IA',
+                    'description' => 'Document créé automatiquement pour les fiches IA',
+                    'chemin' => 'documents/generated.pdf',
+                    'id_type_doc' => 1, // PDF par défaut
+                    'user_id' => Auth::id() ?? 1, // Utilisateur connecté ou par défaut
+                    'id_Matiere' => 1, // Matière par défaut
+                ]);
+                Log::info('Document par défaut créé avec ID: ' . $document->id_doc);
+            }
+
             $ia = Ia::create([
                 'titre' => $request->titre,
-                'contenue_ia' => $request->contenu_ia,
+                'contenue_ia' => $request->contenu_ia, // contenu_ia du frontend → contenue_ia en base
                 'ID_type_IA' => $request->id_type_IA,
-                'id_doc' => $request->id_doc
+                'id_doc' => $document->id_doc
             ]);
 
             if ($request->wantsJson()) {
