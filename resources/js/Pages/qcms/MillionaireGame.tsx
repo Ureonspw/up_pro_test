@@ -76,13 +76,25 @@ export default function MillionaireGame() {
     // Shuffle answers on question change
     useEffect(() => {
         if (questions && questions.length > 0) {
+            const currentAnswers = questions[currentQuestionIndex].answers;
             setShuffledAnswers(
-                [...questions[currentQuestionIndex].answers].sort(
-                    () => Math.random() - 0.5
-                )
+                [...currentAnswers].sort(() => Math.random() - 0.5)
             );
         }
     }, [currentQuestionIndex, questions]);
+
+    // Empêcher le scroll quand le jeu est actif
+    useEffect(() => {
+        if (questions && !gameOver && !won) {
+            document.body.classList.add("millionaire-game-active");
+        } else {
+            document.body.classList.remove("millionaire-game-active");
+        }
+
+        return () => {
+            document.body.classList.remove("millionaire-game-active");
+        };
+    }, [questions, gameOver, won]);
 
     // Palier sécurisé (après 5 et 10 questions)
     useEffect(() => {
@@ -182,7 +194,16 @@ export default function MillionaireGame() {
             }
             (async () => {
                 try {
-                    const result = await model.generateContent([prompt]);
+                    // Timeout de 30 secondes
+                    const timeoutPromise = new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error("Timeout")), 30000)
+                    );
+
+                    const result = (await Promise.race([
+                        model.generateContent([prompt]),
+                        timeoutPromise,
+                    ])) as any;
+
                     let jsonText = result.response.text().trim();
                     jsonText = jsonText
                         .replace(/```json/, "")
@@ -194,17 +215,42 @@ export default function MillionaireGame() {
                             jsonText
                         ) as MillionaireQuestion[];
                         console.log("Questions parsées :", parsedQuestions);
-                        setQuestions(parsedQuestions);
+
+                        // Validation des questions
+                        if (
+                            !Array.isArray(parsedQuestions) ||
+                            parsedQuestions.length === 0
+                        ) {
+                            throw new Error("Aucune question générée");
+                        }
+
+                        // Vérifier que chaque question a les bonnes propriétés
+                        const validQuestions = parsedQuestions.filter(
+                            (q) =>
+                                q.question &&
+                                Array.isArray(q.answers) &&
+                                q.answers.length === 4 &&
+                                q.correctAnswer &&
+                                q.answers.includes(q.correctAnswer)
+                        );
+
+                        if (validQuestions.length < 10) {
+                            throw new Error(
+                                `Seulement ${validQuestions.length} questions valides générées`
+                            );
+                        }
+
+                        setQuestions(validQuestions.slice(0, 10));
                     } catch (err) {
                         console.error("Erreur de parsing JSON :", err);
                         setQuestionsError(
-                            "Erreur lors du parsing des questions.\nRéponse brute : " +
-                                jsonText
+                            "Erreur lors du parsing des questions. Veuillez réessayer."
                         );
                     }
                 } catch (err) {
+                    console.error("Erreur API Gemini:", err);
                     setQuestionsError(
-                        "Erreur lors de la génération des questions. Veuillez réessayer."
+                        "Erreur lors de la génération des questions. Veuillez réessayer. Si le problème persiste, contactez l'administrateur."
                     );
                 } finally {
                     setQuestionsLoading(false);
@@ -394,35 +440,42 @@ export default function MillionaireGame() {
                         {/* Branche de gain à droite */}
                         <div className="millionaire-paliers-panel">
                             <ul className="millionaire-paliers-list">
-                                {PALIER_AMOUNTS.map((amount, idx) => {
-                                    // Affiche du plus petit (en bas) au plus grand (en haut)
-                                    return (
-                                        <li
-                                            key={amount}
-                                            className={
-                                                "millionaire-palier-item" +
-                                                (idx === currentQuestionIndex &&
-                                                !gameOver &&
-                                                !won
-                                                    ? " millionaire-palier-active"
-                                                    : "") +
-                                                ([4, 9].includes(idx)
-                                                    ? " millionaire-palier-secured"
-                                                    : "") +
-                                                (idx < currentQuestionIndex
-                                                    ? " millionaire-palier-passed"
-                                                    : "")
-                                            }
-                                        >
-                                            {amount
-                                                .toLocaleString("fr-FR", {
-                                                    maximumFractionDigits: 0,
-                                                })
-                                                .replace(/\s/g, " ")}{" "}
-                                            FCFA
-                                        </li>
-                                    );
-                                })}
+                                {PALIER_AMOUNTS.slice()
+                                    .reverse()
+                                    .map((amount, idx) => {
+                                        const originalIdx =
+                                            PALIER_AMOUNTS.length - 1 - idx;
+                                        return (
+                                            <li
+                                                key={amount}
+                                                className={
+                                                    "millionaire-palier-item" +
+                                                    (originalIdx ===
+                                                        currentQuestionIndex &&
+                                                    !gameOver &&
+                                                    !won
+                                                        ? " millionaire-palier-active"
+                                                        : "") +
+                                                    ([4, 9].includes(
+                                                        originalIdx
+                                                    )
+                                                        ? " millionaire-palier-secured"
+                                                        : "") +
+                                                    (originalIdx <
+                                                    currentQuestionIndex
+                                                        ? " millionaire-palier-passed"
+                                                        : "")
+                                                }
+                                            >
+                                                {amount
+                                                    .toLocaleString("fr-FR", {
+                                                        maximumFractionDigits: 0,
+                                                    })
+                                                    .replace(/\s/g, " ")}{" "}
+                                                FCFA
+                                            </li>
+                                        );
+                                    })}
                             </ul>
                         </div>
                         {/* Zone principale façon quiz PDF */}
@@ -467,6 +520,32 @@ export default function MillionaireGame() {
                                             !won &&
                                             handleAnswer(answer)
                                         }
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === "Enter" ||
+                                                e.key === " "
+                                            ) {
+                                                e.preventDefault();
+                                                if (
+                                                    selectedAnswer === null &&
+                                                    !gameOver &&
+                                                    !won
+                                                ) {
+                                                    handleAnswer(answer);
+                                                }
+                                            }
+                                        }}
+                                        tabIndex={
+                                            selectedAnswer === null &&
+                                            !gameOver &&
+                                            !won
+                                                ? 0
+                                                : -1
+                                        }
+                                        role="button"
+                                        aria-label={`Réponse ${
+                                            idx + 1
+                                        }: ${answer}`}
                                     >
                                         {answer}
                                     </div>

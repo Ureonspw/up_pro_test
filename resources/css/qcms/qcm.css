@@ -1,8 +1,14 @@
 .millionaire-bg {
-    min-height: 100vh;
-    height: 100vh;
-    width: 100vw;
-    background: linear-gradient(135deg, #3ca36c 0%, #b2e2c7 100%);
+    min-height: calc(100vh - 80px);
+    width: 100%;
+    background: linear-gradient(
+        135deg,
+        #1a4d2e 0%,
+        #2d7d4a 25%,
+        #4caf50 50%,
+        #66bb6a 75%,
+        #81c784 100%
+    );
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -10,56 +16,129 @@
     padding: 0;
     margin: 0;
     position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    animation: background-shift 8s ease-in-out infinite;
+}
+
+@keyframes background-shift {
+    0%,
+    100% {
+        background: linear-gradient(
+            135deg,
+            #1a4d2e 0%,
+            #2d7d4a 25%,
+            #4caf50 50%,
+            #66bb6a 75%,
+            #81c784 100%
+        );
+    }
+    50% {
+        background: linear-gradient(
+            135deg,
+            #2d7d4a 0%,
+            #4caf50 25%,
+            #66bb6a 50%,
+            #81c784 75%,
+            #a5d6a7 100%
+        );
+    }
 }
 
 .millionaire-paliers-panel {
-    position: fixed;
+    position: sticky;
     right: 0;
     top: 0;
-    height: 100vh;
-    width: 320px;
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: -4px 0 24px #0002;
+    height: calc(100vh - 80px);
+    width: 280px;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(240, 248, 255, 0.9) 100%
+    );
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
     z-index: 10;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
-    padding: 2.5rem 1.2rem 2.5rem 1.2rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 1rem 2rem 1rem;
     border-radius: 0;
     margin: 0;
+    backdrop-filter: blur(10px);
+    border-left: 2px solid rgba(255, 215, 0, 0.3);
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
 }
 
 .containerboxgeneral {
-    width: 100vw;
-    max-width: 100vw;
-    height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    min-height: calc(100vh - 80px);
     margin: 0;
-    padding: 0 0 0 0;
+    padding: 0 0 2rem 0;
     border-radius: 0;
     background: none;
     box-shadow: none;
-    margin-right: 320px;
+    margin-right: 280px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .question {
-    width: 90%;
-    max-width: 1100px;
-    margin: 40px auto 24px auto;
-    background: linear-gradient(90deg, #e6f7ee 60%, #c8f2e0 100%);
+    width: 92%;
+    max-width: 1200px;
+    margin: 48px auto 32px auto;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
     color: #1a3d2c;
-    font-size: 2.3em;
-    font-weight: 800;
-    border-radius: 1.5em;
-    box-shadow: 0 4px 32px #3ca36c22, 0 1.5px 8px #fff8;
-    padding: 36px 32px 28px 32px;
+    font-size: 2.4em;
+    font-weight: 900;
+    border-radius: 2.5em;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15),
+        0 4px 16px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 48px 40px 40px 40px;
     text-align: center;
-    letter-spacing: 0.01em;
-    line-height: 1.25;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.question::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: left 0.6s;
+}
+
+.question:hover::before {
+    left: 100%;
+}
+
+.question:hover,
+.question:focus {
+    box-shadow: 0 20px 64px rgba(0, 0, 0, 0.2),
+        0 8px 24px rgba(255, 255, 255, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f3ff 100%);
+    transform: translateY(-4px);
 }
 
 .reponsesbox {
@@ -79,31 +158,63 @@
 .reponsesbox2,
 .reponsesbox3,
 .reponsesbox4 {
-    background: #fff;
-    color: #247a3b;
-    border-radius: 1.5em;
-    font-size: 1.25em;
-    font-weight: 700;
-    box-shadow: 0 2px 12px #3ca36c22;
-    padding: 28px 18px;
-    border: 2.5px solid #b2e2c7;
-    transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+    color: #2c3e50;
+    border-radius: 2em;
+    font-size: 1.3em;
+    font-weight: 800;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 32px 24px;
+    border: 3px solid #e9ecef;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 64px;
+    min-height: 72px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.reponsesbox1::before,
+.reponsesbox2::before,
+.reponsesbox3::before,
+.reponsesbox4::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.reponsesbox1:hover::before,
+.reponsesbox2:hover::before,
+.reponsesbox3:hover::before,
+.reponsesbox4:hover::before {
+    left: 100%;
 }
 
 .reponsesbox1:hover,
 .reponsesbox2:hover,
 .reponsesbox3:hover,
 .reponsesbox4:hover {
-    background: #e6f7ee;
-    color: #247a3b;
-    border: 2.5px solid #3ca36c;
-    box-shadow: 0 4px 24px #3ca36c33;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+    color: #1565c0;
+    border: 3px solid #2196f3;
+    box-shadow: 0 12px 32px rgba(33, 150, 243, 0.3),
+        0 4px 16px rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px) scale(1.02);
 }
 
 .reponsesbox1 samp,
@@ -124,18 +235,60 @@
 }
 
 .timercount {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #e64d57 60%, #f8bcbc 100%);
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #ff5722 0%, #ff7043 50%, #ff8a65 100%);
     border-radius: 50%;
     color: #fff;
-    font-size: 2.1em;
+    font-size: 2.2em;
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 12px #e64d5740;
+    box-shadow: 0 8px 24px rgba(255, 87, 34, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
     border: 4px solid #fff;
+    animation: timer-pulse 2s ease-in-out infinite;
+    position: relative;
+}
+
+.timercount::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff5722, #ff7043, #ff8a65, #ff5722);
+    border-radius: 50%;
+    z-index: -1;
+    animation: timer-border-rotate 3s linear infinite;
+}
+
+@keyframes timer-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 8px 24px rgba(255, 87, 34, 0.4),
+            0 4px 12px rgba(255, 255, 255, 0.8),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 32px rgba(255, 87, 34, 0.6),
+            0 6px 16px rgba(255, 255, 255, 0.9),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+}
+
+@keyframes timer-border-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .correct {
@@ -170,13 +323,46 @@
 
 .points {
     margin-left: auto;
-    color: #1a3d2c;
-    font-size: 1.3em;
-    font-weight: 700;
-    background: #e6f7ee;
-    border-radius: 1em;
-    padding: 10px 28px;
-    box-shadow: 0 2px 8px #3ca36c22;
+    color: #2c3e50;
+    font-size: 1.4em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+    border-radius: 2em;
+    padding: 16px 32px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.points::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 215, 0, 0.3),
+        transparent
+    );
+    transition: left 0.6s;
+}
+
+.points:hover::before {
+    left: 100%;
+}
+
+.points:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(255, 255, 255, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 .loaderContainer {
     display: flex;
@@ -495,15 +681,44 @@
     opacity: 1;
 }
 .millionaire-palier-secured {
-    border: 2.5px solid #ffd700;
-    background: #ffd700;
-    color: #225c22;
-    font-weight: 800;
+    background: linear-gradient(135deg, #28a745 0%, #34ce57 50%, #28a745 100%);
+    color: #fff;
+    border: 2px solid #1e7e34;
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    padding-left: 24px;
+}
+
+.millionaire-palier-secured::before {
+    content: "🔒";
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7em;
 }
 .millionaire-palier-passed {
-    opacity: 0.5;
-    background: #e0e0e0;
-    color: #bdbdbd;
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: #fff;
+    border: 2px solid #495057;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0.8;
+    position: relative;
+    padding-left: 24px;
+}
+
+.millionaire-palier-passed::before {
+    content: "✓";
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #28a745;
 }
 
 /* Réponses */
@@ -653,7 +868,7 @@
     background: #fff;
     border-radius: 2.5rem 0 0 2.5rem;
     box-shadow: 0 8px 32px #0001, 0 0 32px #87b79033 inset;
-    height: 100vh;
+    height: calc(100vh - 80px);
     margin: 0;
 }
 
@@ -712,39 +927,54 @@
     background: #f3f7f2;
     border-radius: 0 2.5rem 2.5rem 0;
     box-shadow: 0 8px 32px #0001, 0 0 32px #87b79033 inset;
-    height: 100vh;
+    height: calc(100vh - 80px);
     padding: 2.5rem 1.2rem 2.5rem 1.2rem;
     margin: 0;
     min-width: 220px;
 }
 .millionaire-paliers-list {
     width: 100%;
-    flex: 1 1 0;
+    height: 100%;
     display: flex;
-    flex-direction: column-reverse;
-    gap: 0.7em;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 0.6em;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
 }
 .millionaire-palier-item {
-    font-size: 1.15em;
-    padding: 12px 20px;
-    margin-bottom: 6px;
-    border-radius: 1.5em;
-    font-weight: 700;
-    background: #e9f5ee;
-    color: #5a8859;
-    border: 2px solid transparent;
-    box-shadow: 0 1px 8px #87b79022;
-    transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    font-size: 0.95em;
+    padding: 10px 16px;
+    margin: 0;
+    border-radius: 1.2em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+    border: 2px solid #dee2e6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 .millionaire-palier-active {
-    background: #5a8859;
-    color: #fff;
-    border: 2.5px solid #ffd700;
-    box-shadow: 0 0 32px #ffd700cc, 0 0 16px #5a8859cc;
-    font-size: 1.22em;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    color: #1a1a1a;
+    border: 3px solid #ff8c00;
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.6),
+        0 0 0 2px rgba(255, 140, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    font-size: 1.25em;
     font-weight: 900;
-    filter: brightness(1.1) drop-shadow(0 0 12px #ffd700);
+    transform: scale(1.05);
+    animation: palier-active-pulse 2s infinite;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive : 1 colonne pour les réponses, paliers en haut, padding réduit */
@@ -906,4 +1136,415 @@
     z-index: 300;
     display: flex;
     align-items: center;
+}
+.millionaire-bg {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(to bottom right, #4caf50, #a8e063);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.millionaire-game-panel {
+    display: flex;
+    flex-direction: row;
+    max-width: 1200px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.containerboxgeneral {
+    flex: 3;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.question {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #12372a;
+    text-align: center;
+}
+
+.reponsesbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.reponsesbox1,
+.reponsesbox2,
+.reponsesbox3,
+.reponsesbox4 {
+    flex: 1 1 45%;
+    background-color: #f0f0f0;
+    padding: 14px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.reponsesbox1:hover,
+.reponsesbox2:hover,
+.reponsesbox3:hover,
+.reponsesbox4:hover {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.correct {
+    background-color: #28a745 !important;
+    color: white;
+    border-color: #218838 !important;
+}
+
+.incorrect {
+    background-color: #dc3545 !important;
+    color: white;
+    border-color: #c82333 !important;
+}
+
+.timercontainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.timercount {
+    background-color: #ffcc00;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.points {
+    font-weight: bold;
+    color: #247a3b;
+}
+
+.millionaire-paliers-panel {
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 20px;
+    overflow-y: auto;
+    border-left: 2px solid #ccc;
+}
+
+.millionaire-paliers-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.millionaire-palier-item {
+    padding: 8px 12px;
+    margin: 4px 0;
+    background-color: #e6f2ff;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.millionaire-palier-active {
+    background-color: #ffd700 !important;
+    color: black;
+    font-weight: bold;
+    border: 2px solid #f39c12;
+}
+
+.millionaire-palier-secured {
+    background-color: #28a745 !important;
+    color: white;
+}
+
+.millionaire-palier-passed {
+    opacity: 0.6;
+}
+
+@keyframes palier-active-pulse {
+    0% {
+        box-shadow: 0 8px 32px rgba(255, 215, 0, 0.6),
+            0 0 0 2px rgba(255, 140, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transform: scale(1.05);
+    }
+    50% {
+        box-shadow: 0 12px 48px rgba(255, 215, 0, 0.8),
+            0 0 0 3px rgba(255, 140, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        transform: scale(1.08);
+    }
+    100% {
+        box-shadow: 0 8px 32px rgba(255, 215, 0, 0.6),
+            0 0 0 2px rgba(255, 140, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transform: scale(1.05);
+    }
+}
+
+/* Empêcher le scroll horizontal sur la page du jeu */
+body.millionaire-game-active {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Boutons de navigation améliorés */
+.millionaire-next-btn {
+    background: linear-gradient(135deg, #4caf50 0%, #66bb6a 50%, #81c784 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2.5em;
+    padding: 20px 40px;
+    font-size: 1.3em;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 32px rgba(76, 175, 80, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.millionaire-next-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    transition: left 0.8s;
+}
+
+.millionaire-next-btn:hover::before {
+    left: 100%;
+}
+
+.millionaire-next-btn:hover {
+    transform: translateY(-6px) scale(1.08);
+    box-shadow: 0 20px 48px rgba(76, 175, 80, 0.6),
+        0 8px 16px rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, #66bb6a 0%, #81c784 50%, #a5d6a7 100%);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.millionaire-next-btn:active {
+    transform: translateY(-2px) scale(1.04);
+    transition: all 0.1s;
+}
+
+.millionaire-replay-btn {
+    background: linear-gradient(135deg, #ff9800 0%, #ffb74d 50%, #ffcc02 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2.5em;
+    padding: 18px 36px;
+    font-size: 1.2em;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 32px rgba(255, 152, 0, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.millionaire-replay-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 16px 40px rgba(255, 152, 0, 0.6),
+        0 6px 16px rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, #ffb74d 0%, #ffcc02 50%, #ffeb3b 100%);
+}
+
+.millionaire-back-btn {
+    background: linear-gradient(135deg, #9e9e9e 0%, #bdbdbd 50%, #e0e0e0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2.5em;
+    padding: 16px 32px;
+    font-size: 1.1em;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 24px rgba(158, 158, 158, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.millionaire-back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(158, 158, 158, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, #bdbdbd 0%, #e0e0e0 50%, #f5f5f5 100%);
+}
+
+/* Panels de fin de partie améliorés */
+.millionaire-end-panel {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(248, 249, 250, 0.9) 100%
+    );
+    border-radius: 3em;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 20px 64px rgba(0, 0, 0, 0.15),
+        0 8px 24px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    animation: end-panel-fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.millionaire-end-win {
+    background: linear-gradient(
+        135deg,
+        rgba(76, 175, 80, 0.1) 0%,
+        rgba(129, 199, 132, 0.05) 100%
+    );
+    border: 3px solid rgba(76, 175, 80, 0.3);
+}
+
+.millionaire-end-lose {
+    background: linear-gradient(
+        135deg,
+        rgba(244, 67, 54, 0.1) 0%,
+        rgba(239, 154, 154, 0.05) 100%
+    );
+    border: 3px solid rgba(244, 67, 54, 0.3);
+}
+
+@keyframes end-panel-fade-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive amélioré pour petits écrans */
+@media (max-width: 768px) {
+    .millionaire-bg {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .millionaire-paliers-panel {
+        position: static;
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        order: 1;
+        margin-bottom: 1rem;
+    }
+
+    .millionaire-paliers-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        justify-content: center;
+        padding: 0.5rem;
+    }
+
+    .millionaire-palier-item {
+        font-size: 0.8em;
+        padding: 8px 12px;
+        min-height: 35px;
+        width: auto;
+        flex: 0 0 auto;
+    }
+
+    .containerboxgeneral {
+        margin-right: 0;
+        order: 2;
+        padding: 1rem;
+    }
+
+    .question {
+        font-size: 1.8em;
+        padding: 24px 20px;
+        margin: 24px auto 20px auto;
+    }
+
+    .reponsesbox {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .reponsesbox1,
+    .reponsesbox2,
+    .reponsesbox3,
+    .reponsesbox4 {
+        font-size: 1.1em;
+        padding: 20px 16px;
+        min-height: 60px;
+    }
+
+    .timercount {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8em;
+    }
+
+    .points {
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+
+    .millionaire-next-btn,
+    .millionaire-replay-btn,
+    .millionaire-back-btn {
+        width: 100%;
+        margin: 8px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .question {
+        font-size: 1.5em;
+        padding: 20px 16px;
+    }
+
+    .millionaire-palier-item {
+        font-size: 0.7em;
+        padding: 6px 10px;
+    }
+
+    .timercount {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5em;
+    }
 }

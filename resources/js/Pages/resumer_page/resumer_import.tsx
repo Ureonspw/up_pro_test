@@ -13,12 +13,17 @@ export default function ResumerImport({ setFile }: ResumerImportProps) {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Effacer les anciennes données avant d'importer un nouveau fichier
+    localStorage.removeItem('uploadedFileData');
+    localStorage.removeItem('pdfBase64');
+    localStorage.removeItem('pdfUrl');
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result;
       if (typeof result === 'string') {
         const base64 = result.split(",")[1];
-        setFile({
+        const fileData = {
           name: file.name,
           content: base64,
           type: file.type,
@@ -26,7 +31,13 @@ export default function ResumerImport({ setFile }: ResumerImportProps) {
           imageUrl: file.type.includes("pdf")
             ? "/document-icon.png"
             : URL.createObjectURL(file)
-        });
+        };
+        
+        // Sauvegarder immédiatement dans localStorage
+        localStorage.setItem('uploadedFileData', JSON.stringify(fileData));
+        console.log('📁 Fichier sauvegardé dans localStorage:', fileData.name);
+        
+        setFile(fileData);
       }
     };
     reader.readAsDataURL(file);

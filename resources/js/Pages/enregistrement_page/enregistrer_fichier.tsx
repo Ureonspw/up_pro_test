@@ -147,7 +147,14 @@ function enregistrement_page({ auth }: Props): JSX.Element {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
-      <button className="back-btn" aria-label="Retour">
+      <button 
+        className="back-btn" 
+        aria-label="Retour"
+        onClick={() => {
+          console.log('🔙 Retour vers la page de résumé...');
+          router.visit('/resumer_page');
+        }}
+      >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="13" fill="none"/>
           <path d="M17 8L11 14L17 20" stroke="#388e5a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
