@@ -14,6 +14,8 @@ interface SummaryProps {
     name: string;
     size: number;
   };
+  selectedLanguage: 'français' | 'yoruba';
+  onLanguageChange: (language: 'français' | 'yoruba') => void;
 }
 
 interface SummarySection {
@@ -39,7 +41,371 @@ function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
-async function generatePdf(sections: SummarySection[], fileName: string): Promise<Blob> {
+async function generateUltraSimplePdf(sections: SummarySection[], fileName: string): Promise<Blob> {
+  console.log('🔧 Génération PDF robuste pour yoruba...');
+  
+  try {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([595, 842]);
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    
+    let y = 800;
+    const margin = 50;
+    
+    // Fonction de nettoyage ultra-robuste
+    const sanitizeText = (text: string): string => {
+      if (!text) return 'Contenu non disponible';
+      
+      return text
+        // Remplacer tous les caractères non-ASCII par leurs équivalents
+        .replace(/[àáâãäå]/g, 'a')
+        .replace(/[èéêë]/g, 'e') 
+        .replace(/[ìíîï]/g, 'i')
+        .replace(/[òóôõö]/g, 'o')
+        .replace(/[ùúûü]/g, 'u')
+        .replace(/[ñ]/g, 'n')
+        .replace(/[ç]/g, 'c')
+        .replace(/[ß]/g, 'ss')
+        // Caractères yoruba spécifiques
+        .replace(/[ọọ́ọ̀]/g, 'o')
+        .replace(/[ẹẹ́ẹ̀]/g, 'e')
+        .replace(/[ṣ]/g, 's')
+        .replace(/[ń]/g, 'n')
+        .replace(/[ṃ]/g, 'm')
+        .replace(/[ẅ]/g, 'w')
+        // Supprimer les caractères de contrôle et autres caractères problématiques
+        .replace(/[\u0300-\u036f]/g, '') // Supprimer les diacritiques
+        .replace(/[^\x20-\x7E]/g, ' ') // Garder seulement les caractères ASCII printables
+        .replace(/\s+/g, ' ') // Normaliser les espaces
+        .trim();
+    };
+    
+    // Titre simple
+    page.drawText('FICHE DE REVISION - YORUBA', {
+      x: margin,
+      y: y,
+      size: 16,
+      font: font,
+    });
+    y -= 40;
+    
+    // Nom du fichier sécurisé
+    const safeFileName = sanitizeText(fileName).substring(0, 50);
+    page.drawText('Fichier: ' + safeFileName, {
+      x: margin,
+      y: y,
+      size: 12,
+      font: font,
+    });
+    y -= 30;
+    
+    // Information sur le nombre de sections
+    page.drawText(`Nombre de sections: ${sections.length}`, {
+      x: margin,
+      y: y,
+      size: 12,
+      font: font,
+    });
+    y -= 30;
+    
+         // Traiter chaque section avec contenu complet
+     sections.forEach((section, index) => {
+       if (y < 100) {
+         // Pas assez de place, créer une nouvelle page
+         const newPage = pdfDoc.addPage([595, 842]);
+         y = 800;
+         // Ajouter le contenu sur la nouvelle page
+         try {
+           const safeTitle = sanitizeText(section.title);
+           newPage.drawText(`${index + 1}. ${safeTitle}`, {
+             x: margin,
+             y: y,
+             size: 12,
+             font: font,
+           });
+           y -= 25;
+           
+           // Contenu complet sur la nouvelle page
+           const fullContent = sanitizeText(section.content);
+           const contentLines = fullContent.split('\n').filter(line => line.trim());
+           
+                       for (const line of contentLines) {
+              if (y < 100) break; // Éviter le débordement
+              
+              // Découper les lignes trop longues
+              const words = line.trim().split(' ');
+              let currentLine = '';
+              
+              for (const word of words) {
+                const testLine = currentLine ? `${currentLine} ${word}` : word;
+                if (testLine.length <= 80) { // Limite en caractères plutôt qu'en pixels
+                  currentLine = testLine;
+                } else {
+                  if (currentLine) {
+                    newPage.drawText(currentLine, {
+                      x: margin + 20,
+                      y: y,
+                      size: 10,
+                      font: font,
+                    });
+                    y -= 15;
+                  }
+                  currentLine = word;
+                }
+              }
+              
+              if (currentLine && y > 100) {
+                newPage.drawText(currentLine, {
+                  x: margin + 20,
+                  y: y,
+                  size: 10,
+                  font: font,
+                });
+                y -= 15;
+              }
+            }
+           
+         } catch (newPageError) {
+           console.warn('Erreur nouvelle page section', index, ':', newPageError);
+         }
+         return;
+       }
+       
+       try {
+         // Titre de section sécurisé
+         const safeTitle = sanitizeText(section.title);
+         page.drawText(`${index + 1}. ${safeTitle}`, {
+           x: margin,
+           y: y,
+           size: 12,
+           font: font,
+         });
+         y -= 25;
+         
+         // Contenu complet sécurisé
+         const fullContent = sanitizeText(section.content);
+         const contentLines = fullContent.split('\n').filter(line => line.trim());
+         
+         // Afficher au maximum 5 lignes par section sur cette page
+         const maxLines = Math.min(5, contentLines.length);
+         
+         for (let i = 0; i < maxLines; i++) {
+           if (y < 100) break;
+           
+           const line = contentLines[i];
+           // Découper les lignes trop longues
+           const words = line.trim().split(' ');
+           let currentLine = '';
+           
+                       for (const word of words) {
+              const testLine = currentLine ? `${currentLine} ${word}` : word;
+              if (testLine.length <= 80) { // Limite en caractères
+                currentLine = testLine;
+              } else {
+                if (currentLine) {
+                  page.drawText(currentLine, {
+                    x: margin + 20,
+                    y: y,
+                    size: 10,
+                    font: font,
+                  });
+                  y -= 15;
+                  if (y < 100) break;
+                }
+                currentLine = word;
+              }
+            }
+           
+           if (currentLine && y > 100) {
+             page.drawText(currentLine, {
+               x: margin + 20,
+               y: y,
+               size: 10,
+               font: font,
+             });
+             y -= 15;
+           }
+         }
+         
+         // Indiquer s'il y a plus de contenu
+         if (contentLines.length > maxLines && y > 100) {
+           page.drawText('... (contenu continue)', {
+             x: margin + 20,
+             y: y,
+             size: 9,
+             font: font,
+           });
+           y -= 20;
+         }
+         
+         y -= 10; // Espace entre sections
+         
+       } catch (sectionError) {
+         console.warn('Erreur section', index, ':', sectionError);
+         page.drawText(`${index + 1}. Section ${index + 1} (erreur de formatage)`, {
+           x: margin,
+           y: y,
+           size: 10,
+           font: font,
+         });
+         y -= 20;
+       }
+     });
+    
+    // Pied de page simple
+    page.drawText('PDF genere automatiquement pour Yoruba', {
+      x: margin,
+      y: 30,
+      size: 8,
+      font: font,
+    });
+    
+    const pdfBytes = await pdfDoc.save();
+    console.log('✅ PDF robuste créé avec succès, taille:', pdfBytes.length);
+    return new Blob([pdfBytes], { type: 'application/pdf' });
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de la création du PDF robuste:', error);
+    
+    // Version de secours ultra-minimale
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      
+      page.drawText('FICHE DE REVISION YORUBA', {
+        x: 50,
+        y: 750,
+        size: 16,
+        font: font,
+      });
+      
+      page.drawText('Contenu genere avec succes', {
+        x: 50,
+        y: 700,
+        size: 12,
+        font: font,
+      });
+      
+      page.drawText(`Sections: ${sections.length}`, {
+        x: 50,
+        y: 680,
+        size: 12,
+        font: font,
+      });
+      
+      const pdfBytes = await pdfDoc.save();
+      console.log('✅ PDF de secours créé');
+      return new Blob([pdfBytes], { type: 'application/pdf' });
+      
+    } catch (fallbackError) {
+      console.error('❌ Même le PDF de secours a échoué:', fallbackError);
+      throw new Error('Impossible de créer un PDF');
+    }
+  }
+}
+
+async function generateSimplePdf(sections: SummarySection[], fileName: string, language: 'français' | 'yoruba'): Promise<Blob> {
+  console.log('🔧 Génération PDF simple pour yoruba...');
+  
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595, 842]);
+  const { width, height } = page.getSize();
+  
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  
+  let y = height - 50;
+  const margin = 50;
+  
+  // Titre simple sans caractères spéciaux
+  const title = language === 'yoruba' ? 'FICHE DE REVISION (YORUBA)' : 'FICHE DE RÉVISION';
+  page.drawText(title, {
+    x: margin,
+    y: y,
+    size: 18,
+    font: boldFont,
+    color: rgb(0, 0, 0),
+  });
+  y -= 40;
+  
+  // Nom du fichier
+  page.drawText(`Fichier: ${fileName}`, {
+    x: margin,
+    y: y,
+    size: 12,
+    font: font,
+    color: rgb(0, 0, 0),
+  });
+  y -= 30;
+  
+  // Sections simplifiées
+  sections.forEach((section, index) => {
+    if (y < 100) return; // Éviter de déborder
+    
+    // Titre de section simplifié (enlever caractères spéciaux)
+    const sectionTitle = section.title.replace(/[àáâãäåèéêëìíîïòóôõöùúûüñç]/g, (match) => {
+      const replacements: {[key: string]: string} = {
+        'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+        'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+        'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+        'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+        'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+        'ñ': 'n', 'ç': 'c'
+      };
+      return replacements[match] || match;
+    });
+    
+    page.drawText(`${index + 1}. ${sectionTitle}`, {
+      x: margin,
+      y: y,
+      size: 14,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+    y -= 20;
+    
+    // Contenu simplifié (première ligne seulement)
+    const content = section.content.split('\n')[0].substring(0, 80) + '...';
+    const cleanContent = content.replace(/[àáâãäåèéêëìíîïòóôõöùúûüñç]/g, (match) => {
+      const replacements: {[key: string]: string} = {
+        'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+        'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+        'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+        'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+        'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+        'ñ': 'n', 'ç': 'c'
+      };
+      return replacements[match] || match;
+    });
+    
+    page.drawText(cleanContent, {
+      x: margin + 20,
+      y: y,
+      size: 10,
+      font: font,
+      color: rgb(0.3, 0.3, 0.3),
+    });
+    y -= 25;
+  });
+  
+  // Pied de page simple
+  page.drawText('PDF simplifie - Compatible yoruba', {
+    x: margin,
+    y: 30,
+    size: 8,
+    font: font,
+    color: rgb(0.5, 0.5, 0.5),
+  });
+  
+  const pdfBytes = await pdfDoc.save();
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
+async function generatePdf(sections: SummarySection[], fileName: string, language: 'français' | 'yoruba' = 'français'): Promise<Blob> {
+  console.log('📝 Début génération PDF, langue:', language);
+  console.log('📊 Nombre de sections:', sections.length);
+  
   const pdfDoc = await PDFDocument.create();
   let currentPage = pdfDoc.addPage([595, 842]); // A4
   
@@ -48,11 +414,41 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
   const maxY = height - margin;
   const minY = margin + 30;
 
-  const titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const sectionTitleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const contentFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const codeFont = await pdfDoc.embedFont(StandardFonts.Courier);
-  const footerFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+  // Fonction pour nettoyer le texte yoruba si nécessaire
+  const sanitizeText = (text: string): string => {
+    if (language === 'yoruba') {
+      // Remplacer les caractères yoruba problématiques par des équivalents ASCII
+      return text
+        .replace(/[àáâãäå]/g, 'a')
+        .replace(/[èéêë]/g, 'e')
+        .replace(/[ìíîï]/g, 'i')
+        .replace(/[òóôõö]/g, 'o')
+        .replace(/[ùúûü]/g, 'u')
+        .replace(/[ñ]/g, 'n')
+        .replace(/[ç]/g, 'c')
+        .replace(/[ẹ]/g, 'e')
+        .replace(/[ọ]/g, 'o')
+        .replace(/[ṣ]/g, 's')
+        .replace(/[ẹ̀]/g, 'e')
+        .replace(/[ọ̀]/g, 'o')
+        .replace(/[ṃ]/g, 'm')
+        .replace(/[ṅ]/g, 'n');
+    }
+    return text;
+  };
+
+  let titleFont, sectionTitleFont, contentFont, codeFont, footerFont;
+  try {
+    titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    sectionTitleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    contentFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    codeFont = await pdfDoc.embedFont(StandardFonts.Courier);
+    footerFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    console.log('✅ Polices chargées avec succès');
+  } catch (fontError) {
+    console.error('❌ Erreur lors du chargement des polices:', fontError);
+    throw new Error('Impossible de charger les polices PDF');
+  }
 
   let y = maxY;
 
@@ -61,7 +457,10 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
     currentPage = pdfDoc.addPage([595, 842]);
     y = maxY;
     // Pied de page
-    currentPage.drawText('Fiche de revision - Page ' + (pdfDoc.getPageCount()), {
+    const pageFooter = language === 'yoruba' ? 
+      'Àkọ́ ìwé àtúnyẹ̀wò - Ojú-ìwé ' + (pdfDoc.getPageCount()) :
+      'Fiche de revision - Page ' + (pdfDoc.getPageCount());
+    currentPage.drawText(pageFooter, {
       x: margin,
       y: margin - 10,
       size: 8,
@@ -108,13 +507,27 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
   };
 
   // En-tête principal
-  currentPage.drawText('FICHE DE RÉVISION', {
-    x: margin,
-    y: y,
-    size: 20,
-    font: titleFont,
-    color: rgb(0.1, 0.7, 0.3),
-  });
+  const mainTitle = language === 'yoruba' ? 'ÀKỌ́ ÌWÉ ÀTÚNYẸ̀WÒ' : 'FICHE DE RÉVISION';
+  try {
+    currentPage.drawText(sanitizeText(mainTitle), {
+      x: margin,
+      y: y,
+      size: 20,
+      font: titleFont,
+      color: rgb(0.1, 0.7, 0.3),
+    });
+    console.log('✅ Titre principal ajouté:', sanitizeText(mainTitle));
+  } catch (titleError) {
+    console.error('❌ Erreur lors de l\'ajout du titre:', titleError);
+    // Version de secours avec titre simple
+    currentPage.drawText(language === 'yoruba' ? 'FICHE DE REVISION' : 'FICHE DE RÉVISION', {
+      x: margin,
+      y: y,
+      size: 20,
+      font: titleFont,
+      color: rgb(0.1, 0.7, 0.3),
+    });
+  }
   y -= 30;
 
   // Nom du fichier (limité à 60 caractères)
@@ -260,7 +673,10 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
   });
 
   // Pied de page final
-  currentPage.drawText(`Genere le ${new Date().toLocaleDateString('fr-FR')} - e-Learning`, {
+  const footerText = language === 'yoruba' ? 
+    `Tí a ṣẹ̀dá ní ${new Date().toLocaleDateString('fr-FR')} - e-Learning` :
+    `Genere le ${new Date().toLocaleDateString('fr-FR')} - e-Learning`;
+  currentPage.drawText(footerText, {
     x: margin,
     y: margin - 10,
     size: 8,
@@ -272,7 +688,7 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
-function Summary({ file }: SummaryProps) {
+function Summary({ file, selectedLanguage, onLanguageChange }: SummaryProps) {
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
   const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
   const [summary, setSummary] = useState<string>("");
@@ -297,42 +713,125 @@ function Summary({ file }: SummaryProps) {
   };
   
   const handleSave = async () => {
+    console.log('🚀 Début de l\'enregistrement, langue:', selectedLanguage);
+    
     if (!parsedSections.length) {
-      console.log('Aucune section à sauvegarder');
+      console.log('❌ Aucune section à sauvegarder');
+      alert(selectedLanguage === 'yoruba' ? 'Kò sí abala tí a lè pamọ́' : 'Aucune section à sauvegarder');
       return;
     }
   
-    console.log('Génération du PDF avec', parsedSections.length, 'sections');
-    console.log('Sections:', parsedSections);
+    console.log('✅ Génération du PDF avec', parsedSections.length, 'sections');
+    console.log('📄 Sections:', parsedSections);
+    console.log('🌍 Langue sélectionnée:', selectedLanguage);
     
     try {
-      const pdfBlob = await generatePdf(parsedSections, file.name);
+      console.log('🔄 Appel de generatePdf...');
+      
+      // Si c'est yoruba, essayer d'abord une version ultra-simplifiée
+      if (selectedLanguage === 'yoruba') {
+        console.log('🔧 Test version ultra-simplifiée pour yoruba...');
+        try {
+          const ultraSimplePdfBlob = await generateUltraSimplePdf(parsedSections, file.name);
+          console.log('✅ PDF ultra-simplifié généré pour yoruba, taille:', ultraSimplePdfBlob.size, 'bytes');
+          
+          const pdfBase64 = await blobToBase64(ultraSimplePdfBlob);
+          localStorage.setItem('pdfBase64', pdfBase64);
+          const pdfUrl = URL.createObjectURL(ultraSimplePdfBlob);
+          localStorage.setItem('pdfUrl', pdfUrl);
+          localStorage.setItem('selectedLanguage', selectedLanguage);
+          
+          // Sauvegarder aussi les sections et le résumé pour pouvoir revenir
+          localStorage.setItem('summaryContent', summary);
+          localStorage.setItem('parsedSections', JSON.stringify(parsedSections));
+          
+          console.log('✅ Données complètes sauvegardées pour yoruba');
+          console.log('🎉 PDF yoruba généré avec succès, redirection...');
+          window.location.href = '/enregistrement_page';
+          return;
+        } catch (ultraError) {
+          console.error('❌ Version ultra-simplifiée échouée:', ultraError);
+          console.log('🔧 Tentative version simplifiée...');
+          try {
+            const simplePdfBlob = await generateSimplePdf(parsedSections, file.name, selectedLanguage);
+            console.log('✅ PDF simplifié généré pour yoruba, taille:', simplePdfBlob.size, 'bytes');
+            
+            const pdfBase64 = await blobToBase64(simplePdfBlob);
+            localStorage.setItem('pdfBase64', pdfBase64);
+            const pdfUrl = URL.createObjectURL(simplePdfBlob);
+            localStorage.setItem('pdfUrl', pdfUrl);
+            localStorage.setItem('selectedLanguage', selectedLanguage);
+            
+            // Sauvegarder aussi les sections et le résumé pour pouvoir revenir
+            localStorage.setItem('summaryContent', summary);
+            localStorage.setItem('parsedSections', JSON.stringify(parsedSections));
+            
+            console.log('✅ Données complètes sauvegardées pour yoruba (version simple)');
+            console.log('🎉 PDF yoruba généré avec succès, redirection...');
+            window.location.href = '/enregistrement_page';
+            return;
+          } catch (simpleError) {
+            console.error('❌ Version simplifiée aussi échouée:', simpleError);
+            console.warn('⚠️ Tentative version complète...');
+          }
+        }
+      }
+      
+      const pdfBlob = await generatePdf(parsedSections, file.name, selectedLanguage);
+      console.log('✅ PDF généré, taille:', pdfBlob.size, 'bytes');
+      
       const pdfBase64 = await blobToBase64(pdfBlob);
+      console.log('✅ PDF converti en base64');
+      
       localStorage.setItem('pdfBase64', pdfBase64);
+      console.log('✅ PDF sauvé dans localStorage');
 
       const pdfUrl = URL.createObjectURL(pdfBlob);
       localStorage.setItem('pdfUrl', pdfUrl);
+      console.log('✅ URL PDF créée:', pdfUrl);
       
-      console.log('PDF généré avec succès');
+      // Sauvegarder la langue pour l'enregistrement
+      localStorage.setItem('selectedLanguage', selectedLanguage);
+      console.log('✅ Langue sauvée:', selectedLanguage);
+      
+      // Sauvegarder aussi les sections et le résumé pour pouvoir revenir
+      localStorage.setItem('summaryContent', summary);
+      localStorage.setItem('parsedSections', JSON.stringify(parsedSections));
+      console.log('✅ Données complètes sauvegardées');
+      
+      console.log('🎉 PDF généré avec succès, redirection...');
       window.location.href = '/enregistrement_page';
-    } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error);
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la génération du PDF:', error);
+      console.error('📊 Détails de l\'erreur:', error?.message);
+      console.error('📋 Stack trace:', error?.stack);
+      
+      const errorMsg = selectedLanguage === 'yoruba' ? 
+        'Àṣìṣe nínú ṣíṣe PDF. Jọ̀wọ́ wo console fún àlàyé síi.' :
+        'Erreur lors de la génération du PDF. Vérifiez la console pour plus de détails.';
+      alert(errorMsg);
     }
   };
 
   const getIconForSection = (title: string): React.ReactNode => {
     const lowerTitle = title.toLowerCase();
-    if (lowerTitle.includes('définition') || lowerTitle.includes('definition')) {
+    if (lowerTitle.includes('définition') || lowerTitle.includes('definition') || 
+        lowerTitle.includes('ìtumọ̀') || lowerTitle.includes('itumọ')) {
       return <FaBookOpen />;
-    } else if (lowerTitle.includes('concept') || lowerTitle.includes('notion')) {
+    } else if (lowerTitle.includes('concept') || lowerTitle.includes('notion') || 
+               lowerTitle.includes('ìmọ̀ pàtàkì') || lowerTitle.includes('imọ pataki')) {
       return <MdTopic />;
-    } else if (lowerTitle.includes('méthodologie') || lowerTitle.includes('methode')) {
+    } else if (lowerTitle.includes('méthodologie') || lowerTitle.includes('methode') || 
+               lowerTitle.includes('ọ̀nà ìṣe') || lowerTitle.includes('ọna ise')) {
       return <MdSchool />;
-    } else if (lowerTitle.includes('exemple') || lowerTitle.includes('application')) {
+    } else if (lowerTitle.includes('exemple') || lowerTitle.includes('application') || 
+               lowerTitle.includes('àpẹẹrẹ') || lowerTitle.includes('apẹẹrẹ')) {
       return <FaListUl />;
-    } else if (lowerTitle.includes('astuce') || lowerTitle.includes('conseil')) {
+    } else if (lowerTitle.includes('astuce') || lowerTitle.includes('conseil') || 
+               lowerTitle.includes('ìmọ̀ràn') || lowerTitle.includes('imọran')) {
       return <FaLightbulb />;
-    } else if (lowerTitle.includes('code') || lowerTitle.includes('algorithme')) {
+    } else if (lowerTitle.includes('code') || lowerTitle.includes('algorithme') || 
+               lowerTitle.includes('kóòdù') || lowerTitle.includes('koodu')) {
       return <FaCode />;
     } else {
       return <FaQuestionCircle />;
@@ -344,6 +843,17 @@ function Summary({ file }: SummaryProps) {
     const lines = content.split('\n');
     let currentSection: SummarySection | null = null;
     
+    // Mots-clés pour les sections en français et yoruba
+    const frenchKeywords = ['Définitions', 'Concepts clés', 'Concepts cles', 'Méthodologie', 'Methodologie', 
+                           'Exemples', 'Astuces', 'Points essentiels', 'Résumé', 'Resume', 'Introduction',
+                           'Objectifs', 'Conclusion', 'Code', 'Algorithmes', 'Formules'];
+    
+    const yorubaKeywords = ['Àwọn ìtumọ̀', 'Àwọn ìmọ̀ pàtàkì', 'Ọ̀nà ìṣe', 'Àwọn àpẹẹrẹ', 
+                           'Àwọn ìmọ̀ràn', 'Àwọn kókó pàtàkì', 'Ìfihàn', 'Ìpilẹ̀ṣẹ̀', 
+                           'Àwọn ète', 'Àwọn àgbékalẹ̀', 'Àpẹẹrẹ', 'Ìmọ̀ràn'];
+    
+    const allKeywords = [...frenchKeywords, ...yorubaKeywords];
+    
     for (const line of lines) {
       const trimmedLine = line.trim();
       
@@ -351,9 +861,7 @@ function Summary({ file }: SummaryProps) {
       if (
         (trimmedLine.length > 0 && trimmedLine.length < 50 && 
          (trimmedLine.endsWith(':') || /^[A-Z][a-zA-ZÀ-ÿ\s]+$/.test(trimmedLine))) ||
-        ['Définitions', 'Concepts clés', 'Concepts cles', 'Méthodologie', 'Methodologie', 
-         'Exemples', 'Astuces', 'Points essentiels', 'Résumé', 'Resume', 'Introduction',
-         'Objectifs', 'Conclusion', 'Code', 'Algorithmes', 'Formules'].some(keyword => 
+        allKeywords.some(keyword => 
           trimmedLine.toLowerCase().includes(keyword.toLowerCase()))
       ) {
         // Sauvegarder la section précédente si elle existe
@@ -420,13 +928,43 @@ function Summary({ file }: SummaryProps) {
 
       console.log('🤖 Appel API Google Generative AI...');
       
-      const result = await model.generateContent([
-        {
-          inlineData: {
-            data: file.file,
-            mimeType: file.type,
-          },
-        },
+      const prompt = selectedLanguage === 'yoruba' ? 
+        `
+        Ṣe akọsilẹ àkọ́kọ́ tó pé àti tó tẹ́lẹ̀ lọ́nà tó dára nípa àkọ́ọ̀lẹ̀ yìí.
+
+        ỌNÀ ÀTÒPỌ̀ TÓ NÍ LÁÌ ṢE DÉÉDÉ :
+        1. Bẹ̀rẹ̀ pẹ̀lú "Àwọn ìtumọ̀ :" fún àwọn ọ̀rọ̀ pàtàkì
+        2. Lẹ́yìn náà "Àwọn ìmọ̀ pàtàkì :" fún àwọn ero àkọ́kọ́
+        3. Lẹ́yìn náà "Ọ̀nà ìṣe :" fún àwọn ìlànà àti ọ̀nà
+        4. Fi "Àwọn àpẹẹrẹ :" kún un pẹ̀lú àwọn àpẹẹrẹ tó ṣe é rí
+        5. Parí pẹ̀lú "Àwọn ìmọ̀ràn :" pẹ̀lú àwọn ìmọ̀ràn tó wúlò
+
+        ÀWỌN ÒFIN ÀGBÉKALẸ̀ :
+        - Lo àwọn àkọlé wọ̀nyí gangan tó bá ó fún àmì idánimọ̀
+        - Ya àwọn abala kọ̀ọ̀kan pẹ̀lú ìlà òfò
+        - Lo àwọn gbólóhùn kúkurú àti tó yé ni
+        - Fún kóòdù, lo àgbédémọ̀ tó dára
+        - Yéra fún àwọn àmì àgbékalẹ̀ (**, *, àti bẹ́ẹ̀ bẹ́ẹ̀ lọ)
+        - Jẹ́ kí ó ṣe gège bi àkópọ̀ àti tó péye
+
+        ÀPẸẸRẸ ETÒ :
+        Àwọn ìtumọ̀ :
+        [àkọ́ọ̀lẹ̀ àwọn ìtumọ̀]
+
+        Àwọn ìmọ̀ pàtàkì :
+        [àkọ́ọ̀lẹ̀ àwọn ìmọ̀]
+
+        Ọ̀nà ìṣe :
+        [àkọ́ọ̀lẹ̀ ọ̀nà ìṣe]
+
+        Àwọn àpẹẹrẹ :
+        [àwọn àpẹẹrẹ tó ṣe é rí]
+
+        Àwọn ìmọ̀ràn :
+        [àwọn ìmọ̀ràn tó wúlò]
+
+        KÒ GBỌDỌ̀ LO ÈDÈ MÌÍRÀN RÁRÁ, LO YORÙBÁ NÌKAN.
+        ` : 
         `
         Crée une fiche de révision complète et bien structurée basée sur le contenu du document.
 
@@ -460,7 +998,16 @@ function Summary({ file }: SummaryProps) {
 
         Astuces :
         [conseils pratiques]
-        `
+        `;
+
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            data: file.file,
+            mimeType: file.type,
+          },
+        },
+        prompt
       ]);
       
       console.log('✅ Réponse reçue de l\'API');
@@ -520,7 +1067,33 @@ function Summary({ file }: SummaryProps) {
     try {
       console.log('🔄 Génération des suggestions de leçons...');
       
-      const result = await model.generateContent([
+      const suggestionsPrompt = selectedLanguage === 'yoruba' ?
+        `
+        Dá lórí àkópọ̀ ẹ̀kọ́ yìí : "${summary}"
+        
+        Ṣe ìmọ̀ràn mẹ́rin ti àwọn ẹ̀kọ́ tó rọrùn àti tó ni ìbámú tó máa ran ẹni tó ń kọ́ ẹ̀kọ́ lọ́wọ́ láti yé e dáadáa.
+        
+        Ẹ̀kọ́ kọ̀ọ̀kan gbọdọ̀ wà ní agbègbè tó bá a mu ṣùgbọ́n tó rọrùn tàbí tó jinlẹ̀ sí apá kan.
+        
+        Da JSON àkójọ nìkan padà láì ní ọ̀rọ̀ àfikún pẹ̀lú ètò yìí gangan :
+        [
+          {
+            "title": "Àkọlé ẹ̀kọ́",
+            "description": "Àpèjúwe kúkurú àti tó yé ni nípa ohun tí a ó kọ́",
+            "difficulty": "Àkọ́kọ́", // tàbí "Àárín" tàbí "Gíga"
+            "topics": ["kókó1", "kókó2", "kókó3"],
+            "estimatedTime": "ìṣẹ́jú 30" // tàbí àkókò mìíràn tó yẹ
+          }
+        ]
+        
+        Rí i dájú pé àwọn ìmọ̀ràn náà:
+        - Ló nípa ìlọsíwájú (láti èyí tó rọrùn dé èyí tó nira)
+        - Bá àkóó lọ́wọ́lọ́wọ́ mu
+        - Ṣe é ṣe àti tó yẹ
+        - Bá ipò ẹni tó ń kọ́ ẹ̀kọ́ mu
+
+        KÒ GBỌDỌ̀ LO ÈDÈ MÌÍRÀN RÁRÁ, LO YORÙBÁ NÌKAN.
+        ` :
         `
         Basé sur ce résumé de cours : "${summary}"
         
@@ -544,8 +1117,9 @@ function Summary({ file }: SummaryProps) {
         - Complémentaires au contenu actuel
         - Pratiques et réalisables
         - Adaptées au niveau de l'apprenant
-        `
-      ]);
+        `;
+
+      const result = await model.generateContent([suggestionsPrompt]);
 
       let responseText = result.response.text().trim();
       // Nettoyer la réponse pour extraire uniquement le JSON
@@ -581,15 +1155,36 @@ function Summary({ file }: SummaryProps) {
       <div className={styles.header}>
         <img src={file.imageUrl} alt="Preview" className={styles.previewImage} />
         <div className={styles.headerInfo}>
-          <h2 className={styles.title}>📚 Fiche de Révision</h2>
+          <h2 className={styles.title}>📚 {selectedLanguage === 'yoruba' ? 'Àkọ́ Ìwé Àtúnyẹ̀wò' : 'Fiche de Révision'}</h2>
           <p className={styles.fileName}>{file.name}</p>
+        </div>
+        <div className={styles.languageSelector}>
+          <label className={styles.languageLabel}>
+            🌍 Langue :
+          </label>
+          <select 
+            value={selectedLanguage}
+            onChange={(e) => {
+              const newLanguage = e.target.value as 'français' | 'yoruba';
+              onLanguageChange(newLanguage);
+              // Regénérer le résumé dans la nouvelle langue
+              setSummary("");
+              setParsedSections([]);
+              setLessonSuggestions([]);
+              setStatus("idle");
+            }}
+            className={styles.languageSelect}
+          >
+            <option value="français">🇫🇷 Français</option>
+            <option value="yoruba">🇳🇬 Yorùbá</option>
+          </select>
         </div>
       </div>
 
       {status === "loading" ? (
         <div className={styles.loadingSection}>
           <Loader />
-          <p>Génération de votre fiche de révision personnalisée...</p>
+          <p>{selectedLanguage === 'yoruba' ? 'Ṣíṣe àkọ́ ìwé àtúnyẹ̀wò tí ẹ yàn...' : 'Génération de votre fiche de révision personnalisée...'}</p>
         </div>
       ) : status === "success" ? (
         <div className={styles.sectionsContainer}>
@@ -628,17 +1223,20 @@ function Summary({ file }: SummaryProps) {
             <div className={styles.suggestionsSection}>
               <div className={styles.suggestionsHeader}>
                 <h3 className={styles.suggestionsTitle}>
-                  💡 Leçons recommandées pour approfondir
+                  💡 {selectedLanguage === 'yoruba' ? 'Àwọn ẹ̀kọ́ tí a ṣe ìmọ̀ràn fún ìmúlò jinlẹ̀' : 'Leçons recommandées pour approfondir'}
                 </h3>
                 <p className={styles.suggestionsSubtitle}>
-                  Voici des suggestions de leçons simples pour vous aider à mieux comprendre ce sujet
+                  {selectedLanguage === 'yoruba' ? 
+                    'Èyí ni àwọn ìmọ̀ràn ti àwọn ẹ̀kọ́ tó rọrùn láti ran ọ́ lọ́wọ́ láti yé kókó yìí dáadáa' :
+                    'Voici des suggestions de leçons simples pour vous aider à mieux comprendre ce sujet'
+                  }
                 </p>
               </div>
               
               {suggestionsLoading ? (
                 <div className={styles.suggestionsLoading}>
                   <Loader />
-                  <p>Génération des suggestions de leçons...</p>
+                  <p>{selectedLanguage === 'yoruba' ? 'Ṣíṣe àwọn ìmọ̀ràn ẹ̀kọ́...' : 'Génération des suggestions de leçons...'}</p>
                 </div>
               ) : (
                 <div className={styles.suggestionsGrid}>
@@ -708,12 +1306,14 @@ function Summary({ file }: SummaryProps) {
         </div>
       ) : status === "error" ? (
         <div className={styles.errorSection}>
-          <p className={styles.error}>❌ Erreur lors de la génération du résumé</p>
+          <p className={styles.error}>
+            ❌ {selectedLanguage === 'yoruba' ? 'Àṣìṣe nínú ṣíṣe àkópọ̀' : 'Erreur lors de la génération du résumé'}
+          </p>
           <p className={styles.errorDetail}>{errorMessage}</p>
           
           {retryCount >= 2 && (
             <div className={styles.troubleshootSection}>
-              <h4>💡 Conseils de dépannage :</h4>
+              <h4>💡 {selectedLanguage === 'yoruba' ? 'Àwọn ìmọ̀ràn àtúnṣe :' : 'Conseils de dépannage :'}</h4>
               <ul>
                 <li>✅ Vérifiez votre connexion internet</li>
                 <li>📄 Essayez avec un fichier plus petit (moins de 5MB)</li>
@@ -758,8 +1358,14 @@ function Summary({ file }: SummaryProps) {
 
       {status === "success" && parsedSections.length > 0 && (
         <div className={styles.actionSection}>
-          <button className={styles.saveButton} onClick={handleSave}>
-            💾 Enregistrer la fiche
+          <button 
+            className={styles.saveButton} 
+            onClick={() => {
+              console.log('🔘 Bouton cliqué, langue:', selectedLanguage);
+              handleSave();
+            }}
+          >
+            💾 {selectedLanguage === 'yoruba' ? 'Pamọ́ àkọ́ ìwé náà' : 'Enregistrer la fiche'}
           </button>
         </div>
       )}

@@ -198,10 +198,7 @@ function EnregistrementPage({ auth, uploadedFile }: Props): JSX.Element {
       <button 
         className={styles['back-btn']} 
         aria-label="Retour"
-        onClick={() => {
-          console.log('🔙 Retour vers la page de résumé (Prof)...');
-          router.visit('/resumer_page');
-        }}
+        onClick={() => router.visit('/resumer_page')}
       >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="13" fill="none"/>

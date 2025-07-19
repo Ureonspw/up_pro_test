@@ -15,6 +15,7 @@ interface FileProps {
 
 interface ChatProps {
   file: FileProps;
+  selectedLanguage: 'français' | 'yoruba';
 }
 
 function formatMessage(text: string): JSX.Element[] {
@@ -47,7 +48,7 @@ function formatMessage(text: string): JSX.Element[] {
   return parts;
 }
 
-function Chat({ file }: ChatProps) {
+function Chat({ file, selectedLanguage }: ChatProps) {
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
   const model = genAI.getGenerativeModel({ model: 'models/gemini-2.0-flash' });
   const [messages, setMessages] = useState<Message[]>([]);
@@ -60,6 +61,24 @@ function Chat({ file }: ChatProps) {
       setMessages(chatMessages);
 
       try {
+        const chatPrompt = selectedLanguage === 'yoruba' ?
+          `
+          Dahun ìbéèrè yìí lórí àkọ́ọ̀lẹ̀ tí a fi dá e lẹ́lẹ̀ : ${input}.
+          Dahun gẹ́gẹ́ bí chatbot pẹ̀lú àwọn ìròyìn kúkurú àti ọ̀rọ̀ nìkan (kò sí àwọn àmì àgbékalẹ̀, àwọn àmì tàbí àwọn àmì àti ohun àtàyébáláà).
+          Tí àkọ́ọ̀lẹ̀ náà bá ní kóòdù, fi hàn ní ọ̀nà tó tọ́, pẹ̀lú àwọn ìlà tuntun àti àgbédémọ̀ tó dára. Tún ṣe àgbékalẹ̀ ọ̀rọ̀ náà dáadáa.
+          Tí kóòdù bá gùn, fi èdè náà kún un lẹ́yìn àwọn backticks mẹ́ta.
+          Ìtàn ìbánisọ̀rọ̀: ${JSON.stringify(messages)}
+          
+          GBỌDỌ̀ DAHUN NÍ YORÙBÁ NÌKAN, kò tó bá ti jẹ́ pé ìbéèrè náà wà ní èdè mìíràn.
+          ` :
+          `
+          Répondez à cette question sur le document ci-joint : ${input}.
+          Répondez en tant que chatbot avec des messages courts et du texte uniquement (pas de démarques, de balises ou de symboles).
+          Si le document contient du code, affiche-le correctement formaté, avec des retours à la ligne et une indentation propre. Formate aussi bien le texte stp.
+          Si le code est long, ajoute le langage après les 3 backticks.
+          Chat history: ${JSON.stringify(messages)}
+          `;
+
         const result = await model.generateContent([
           {
             inlineData: {
@@ -67,29 +86,32 @@ function Chat({ file }: ChatProps) {
               mimeType: file.type,
             },
           },
-          `
-          Répondez à cette question sur le document ci-joint : ${input}.
-          Répondez en tant que chatbot avec des messages courts et du texte uniquement (pas de démarques, de balises ou de symboles).
-          Si le document contient du code, affiche-le correctement formaté, avec des retours à la ligne et une indentation propre. Formate aussi bien le texte stp.
-          Si le code est long, ajoute le langage après les 3 backticks.
-          Chat history: ${JSON.stringify(messages)}
-          `,
+          chatPrompt,
         ]);
 
         chatMessages = [...chatMessages.filter((msg) => msg.role !== 'loader'), { role: "model", text: result.response.text() }];
         setMessages(chatMessages);
       } catch (error) {
-        chatMessages = [...chatMessages.filter((msg) => msg.role !== 'loader'), { role: "error", text: "Error sending messages, please try again later." }];
+        const errorMessage = selectedLanguage === 'yoruba' ? 
+          "Àṣìṣe nínú ríràn àwọn ìròyìn, jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i." :
+          "Error sending messages, please try again later.";
+        chatMessages = [...chatMessages.filter((msg) => msg.role !== 'loader'), { role: "error", text: errorMessage }];
         setMessages(chatMessages);
         console.error(error);
       }
     }
   }
 
+  const chatTitle = selectedLanguage === 'yoruba' ? 'Ìbánisọ̀rọ̀' : 'Chat';
+  const placeholderText = selectedLanguage === 'yoruba' ? 
+    'Béèrè ìbéèrè rẹ níhìn-ín nípa àkọ́ọ̀lẹ̀ náà' : 
+    'Posez votre question ici a propos du document';
+  const buttonText = selectedLanguage === 'yoruba' ? 'Firánṣẹ́' : 'Envoyer';
+
   return (
 
     <section className={styles.chatWindow}>
-      <h2 className={styles.title}>Chat</h2>
+      <h2 className={styles.title}>{chatTitle}</h2>
       {messages.length > 0 && (
         <div className={styles.chat}>
           {messages.map((msg, index) => (
@@ -106,9 +128,9 @@ function Chat({ file }: ChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="text"
-          placeholder="Posez votre question ici a propos du document"
+          placeholder={placeholderText}
         />
-        <button onClick={handleSendMessage}>Envoyer</button>
+        <button onClick={handleSendMessage}>{buttonText}</button>
       </div>
     </section>
 

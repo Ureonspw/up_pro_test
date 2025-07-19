@@ -108,6 +108,18 @@ export default function Login({
                         Log in
                     </PrimaryButton>
                 </div>
+
+                <div className="mt-4 flex items-center justify-center">
+                    <span className="text-sm text-gray-600">
+                        Pas de compte ?{' '}
+                        <Link
+                            href={route('register')}
+                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            S'inscrire
+                        </Link>
+                    </span>
+                </div>
             </form>
         </GuestLayout>
     );

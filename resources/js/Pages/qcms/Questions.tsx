@@ -5,9 +5,7 @@ import { FaVectorSquare } from "react-icons/fa";
 import { LuDiamond } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { FaSmileWink } from "react-icons/fa";
-
-
+import { FaSmileWink, FaGlobe } from "react-icons/fa";
 
 interface Question {
   question: string;
@@ -24,32 +22,59 @@ interface QuestionsProps {
   file: FileProps;
 }
 
+// Traductions
+const translations = {
+  fr: {
+    questionsReady: "Les questions sont prêtes !",
+    startQuiz: "Commencer le quiz",
+    generating: "Patiente... Génération des questions en cours !",
+    noQuestions: "Aucune question générée. Vérifie le document ou réessaie.",
+    points: "Points",
+    nextQuestion: "Question Suivante",
+    quizFinished: "Quiz terminé ! Score :",
+    selectLanguage: "Choisir la langue :",
+    french: "Français",
+    yoruba: "Yorùbá"
+  },
+  yo: {
+    questionsReady: "Àwọn ìbéèrè ti ṣetan !",
+    startQuiz: "Bẹ̀rẹ̀ ìdánwò",
+    generating: "Dúró díẹ̀... Àwọn ìbéèrè ń ṣẹ̀dá !",
+    noQuestions: "Kò sí ìbéèrè tí a ṣẹ̀dá. Wo ìwé náà tàbí gbìyànjú lẹ́ẹ̀kan sí i.",
+    points: "Àwọn Àmì",
+    nextQuestion: "Ìbéèrè Tókàn",
+    quizFinished: "Ìdánwò ti parí ! Àmì:",
+    selectLanguage: "Yan èdè:",
+    french: "Faransé",
+    yoruba: "Yorùbá"
+  }
+};
+
 function Questions({ file }: QuestionsProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(30);
   const [showNextButton, setShowNextButton] = useState(false);
   const [score, setScore] = useState(0);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quizStarted, setQuizStarted] = useState(false); // ✅ État du quiz (commencé ou pas)
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<'fr' | 'yo'>('fr'); // État pour la langue
 
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
   const model = genAI.getGenerativeModel({ model: 'models/gemini-2.0-flash' });
+
+  const t = translations[selectedLanguage]; // Fonction de traduction
 
   useEffect(() => {
     async function generateQuestions() {
       try {
         setLoading(true);
-        const result = await model.generateContent([
-          {
-            inlineData: {
-              data: file.file,
-              mimeType: file.type,
-            },
-          },
-          `
+        
+        // Prompt selon la langue choisie
+        const prompts = {
+          fr: `
 Génère 10 questions QCM basées sur le document fourni. Pour chaque question, donne :
 - Le texte de la question.
 - Quatre réponses au choix (y compris la bonne réponse).
@@ -63,7 +88,32 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
   },
   ...
 ]
+`,
+          yo: `
+Ṣẹ̀dá ìbéèrè ìdánwò mẹ́wàá tí ó dá lórí ìwé tí a pèsè. Fún ìbéèrè kọ̀ọ̀kan, pèsè:
+- Ọ̀rọ̀ ìbéèrè náà.
+- Ìdáhùn mẹ́rin láti yan lára (pẹ̀lú ìdáhùn tí ó tọ́).
+- Tọ́ka sí ìdáhùn tí ó tọ́.
+Fun mi ni àkójọ JSON lásán, láì sí \`\`\`json, láì sí àmì Markdown, tàbí ọ̀rọ̀ míràn. Ìtòlẹ́sẹẹsẹ náà gbọdọ̀ jẹ́ gẹ́gẹ́ bí èyí tí ó wà nísàlẹ̀:
+[
+  {
+    "question": "Kí ni èdè ìṣètò tí wọ́n ń lò jùlọ ?",
+    "answers": ["Python", "JavaScript", "Java", "C#"],
+    "correctAnswer": "JavaScript"
+  },
+  ...
+]
 `
+        };
+
+        const result = await model.generateContent([
+          {
+            inlineData: {
+              data: file.file,
+              mimeType: file.type,
+            },
+          },
+          prompts[selectedLanguage]
         ]);
 
         let jsonText = result.response.text().trim();
@@ -79,7 +129,7 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
     }
 
     generateQuestions();
-  }, [file]);
+  }, [file, selectedLanguage]); // Dépendance sur selectedLanguage
 
   // Timer (uniquement si le quiz a commencé)
   useEffect(() => {
@@ -117,16 +167,16 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
-      setTimer(10);
+      setTimer(30);
       setShowNextButton(false);
     } else {
-      alert(`Quiz terminé ! Score : ${score}`);
+      alert(`${t.quizFinished} ${score}`);
       setScore(0);
       setCurrentQuestionIndex(0);
       setSelectedAnswer(null);
-      setTimer(10);
+      setTimer(30);
       setShowNextButton(false);
-      setQuizStarted(false); // ✅ Remettre le quiz à l'état initial
+      setQuizStarted(false);
     }
   };
 
@@ -134,11 +184,17 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
     setQuizStarted(true);
   };
 
+  const handleLanguageChange = (language: 'fr' | 'yo') => {
+    setSelectedLanguage(language);
+    setQuestions([]); // Reset questions pour régénérer dans la nouvelle langue
+    setLoading(true);
+  };
+
   if (loading) {
     return (
       <div className={Classes.loaderContainer}>
         <div className={Classes.loaderSpinner}></div>
-        <p className={Classes.loaderText}>Patiente... Génération des questions en cours !</p>
+        <p className={Classes.loaderText}>{t.generating}</p>
       </div>
     );
   }
@@ -146,16 +202,31 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
   if (!quizStarted) {
     return (
       <div className={Classes.startContainer}>
-        <h2>Les questions sont prêtes ! <FaSmileWink size={32} /></h2>
+        <h2>{t.questionsReady} <FaSmileWink size={32} /></h2>
+        
+        {/* Sélecteur de langue */}
+        <div className={Classes.languageSelector}>
+          <FaGlobe size={20} style={{ marginRight: '10px' }} />
+          <span>{t.selectLanguage}</span>
+          <select 
+            value={selectedLanguage} 
+            onChange={(e) => handleLanguageChange(e.target.value as 'fr' | 'yo')}
+            className={Classes.languageSelect}
+          >
+            <option value="fr">{translations.fr.french}</option>
+            <option value="yo">{translations.fr.yoruba}</option>
+          </select>
+        </div>
+
         <button className={Classes.startButton} onClick={startQuiz}>
-          Commencer le quiz
+          {t.startQuiz}
         </button>
       </div>
     );
   }
 
   if (questions.length === 0) {
-    return <div className={Classes.error}>Aucune question générée. Vérifie le document ou réessaie.</div>;
+    return <div className={Classes.error}>{t.noQuestions}</div>;
   }
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -166,7 +237,7 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
         <div className={Classes.question}>{currentQuestion.question}</div>
         <div className={Classes.timercontainer}>
           <div className={Classes.timercount}>{timer}</div>
-          <div className={Classes.points}>Points : {score}</div>
+          <div className={Classes.points}>{t.points} : {score}</div>
         </div>
         <div className={Classes.reponsesbox}>
           {shuffledAnswers.map((answer, index) => (
@@ -194,7 +265,7 @@ Donne uniquement le tableau JSON brut, sans \`\`\`json, sans balises Markdown, n
         </div>
         {showNextButton && (
           <button className={Classes.nextButton} onClick={handleNextQuestion}>
-            Question Suivante
+            {t.nextQuestion}
           </button>
         )}
       </div>

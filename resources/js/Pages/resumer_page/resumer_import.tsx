@@ -35,7 +35,6 @@ export default function ResumerImport({ setFile }: ResumerImportProps) {
         
         // Sauvegarder immédiatement dans localStorage
         localStorage.setItem('uploadedFileData', JSON.stringify(fileData));
-        console.log('📁 Fichier sauvegardé dans localStorage:', fileData.name);
         
         setFile(fileData);
       }

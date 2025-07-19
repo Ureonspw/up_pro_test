@@ -9,51 +9,50 @@ import { FileObject } from '@/types';
 
 export default function ResumerPage() {
     const [uploadedFile, setUploadedFile] = useState<FileObject | null>(null);
+    const [selectedLanguage, setSelectedLanguage] = useState<'français' | 'yoruba'>('français');
+    const [shouldRestoreState, setShouldRestoreState] = useState<boolean>(false);
 
-    // Restaurer le fichier depuis localStorage au chargement de la page
+    // Restaurer le fichier et la langue depuis localStorage au chargement de la page
     useEffect(() => {
         const savedFileData = localStorage.getItem('uploadedFileData');
-        console.log('🔄 Vérification localStorage...', savedFileData ? 'Données trouvées' : 'Pas de données');
+        const savedLanguage = localStorage.getItem('selectedLanguage') as 'français' | 'yoruba';
+        
+        if (savedLanguage && (savedLanguage === 'français' || savedLanguage === 'yoruba')) {
+            setSelectedLanguage(savedLanguage);
+        }
         
         if (savedFileData) {
             try {
                 const fileData = JSON.parse(savedFileData);
-                console.log('✅ Fichier restauré:', fileData.name);
                 setUploadedFile(fileData);
             } catch (error) {
-                console.error('❌ Erreur lors de la restauration du fichier:', error);
+                console.error('Erreur lors de la restauration du fichier:', error);
                 localStorage.removeItem('uploadedFileData');
             }
         }
     }, []);
 
+    // Sauvegarder la langue sélectionnée dans localStorage
+    useEffect(() => {
+        localStorage.setItem('selectedLanguage', selectedLanguage);
+    }, [selectedLanguage]);
+
     const handleFileUpload = (file: FileObject) => {
-        console.log('📥 Réception du fichier:', file.name);
         setUploadedFile(file);
         // La sauvegarde est déjà faite dans resumer_import.tsx
     };
 
     const handleNewDocument = () => {
-        console.log('🗑️ Suppression des données...');
         setUploadedFile(null);
+        setSelectedLanguage('français'); // Remettre par défaut
         // Effacer les données sauvegardées
         localStorage.removeItem('uploadedFileData');
         localStorage.removeItem('pdfBase64');
         localStorage.removeItem('pdfUrl');
+        localStorage.removeItem('selectedLanguage');
     };
 
-    const checkLocalStorage = () => {
-        const data = localStorage.getItem('uploadedFileData');
-        console.log('💾 Données localStorage:', data ? 'Présentes' : 'Absentes');
-        if (data) {
-            try {
-                const parsed = JSON.parse(data);
-                console.log('📄 Fichier sauvé:', parsed.name);
-            } catch (e) {
-                console.log('❌ Données corrompues');
-            }
-        }
-    };
+
 
     return (
         <>
@@ -91,29 +90,15 @@ export default function ResumerPage() {
                             >
                                 📄 Nouveau document
                             </button>
-                            <button 
-                                onClick={checkLocalStorage}
-                                style={{
-                                    position: 'fixed',
-                                    top: '80px',
-                                    right: '20px',
-                                    backgroundColor: '#4CAF50',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '25px',
-                                    padding: '10px 20px',
-                                    cursor: 'pointer',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                    zIndex: 1000,
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                                }}
-                                title="Vérifier localStorage (Debug)"
-                            >
-                                🔍 Debug
-                            </button>
-                            <Summary file={uploadedFile} />
-                            <Chat file={uploadedFile} />
+                            <Summary 
+                                file={uploadedFile} 
+                                selectedLanguage={selectedLanguage}
+                                onLanguageChange={setSelectedLanguage}
+                            />
+                            <Chat 
+                                file={uploadedFile} 
+                                selectedLanguage={selectedLanguage}
+                            />
                         </div>
                     </AuthenticatedLayout>
                 ) : (
