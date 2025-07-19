@@ -166,6 +166,9 @@ Route::get('/import_prof', function () {
     return Inertia::render('Professeur/enregistrementPro_pagemain');
 })->middleware(['auth', 'verified'])->name('import_prof');
 
+Route::get('/millionaire', function () {
+    return Inertia::render('qcms/MillionaireGame');
+})->name('millionaire');
 
 Route::get('/api/matieres', [MatiereController::class, 'getAllMatieres']);
 
