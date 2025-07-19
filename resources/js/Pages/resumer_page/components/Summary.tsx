@@ -266,7 +266,7 @@ async function generatePdf(sections: SummarySection[], fileName: string): Promis
 
 function Summary({ file }: SummaryProps) {
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
-  const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
   const [summary, setSummary] = useState<string>("");
   const [parsedSections, setParsedSections] = useState<SummarySection[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");

@@ -105,7 +105,7 @@ function Questionnaire({ file }: QuestionnaireProps) {
   const [score, setScore] = useState(0);
 
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
-  const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
 
   useEffect(() => {
     async function fetchQuestions() {

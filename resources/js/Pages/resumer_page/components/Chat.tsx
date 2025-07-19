@@ -49,7 +49,7 @@ function formatMessage(text: string): JSX.Element[] {
 
 function Chat({ file }: ChatProps) {
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
-  const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'models/gemini-2.0-flash' });
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
 
