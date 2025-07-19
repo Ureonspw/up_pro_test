@@ -34,7 +34,7 @@ function Flashcard({ file }: FlashcardProps) {
   const [showSummary, setShowSummary] = useState(false);
 
   const genAI = new GoogleGenerativeAI("AIzaSyBQlEUG_Tpan-EO_PlxXaT_4kWm0ZfVK0U");
-  const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
 
   useEffect(() => {
     async function generateFlashcards() {

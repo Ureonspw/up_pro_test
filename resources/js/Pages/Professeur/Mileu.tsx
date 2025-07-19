@@ -1,4 +1,4 @@
-import styles from '../../../css/menu_principal/homepage.module.css';
+import styles from '../../../css/menu_principal/homepageprof.module.css';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { IoChevronForward } from "react-icons/io5";
 import { FaRegFileLines } from "react-icons/fa6";
@@ -39,6 +39,12 @@ const cards: CardItem[] = [
     description: "mettre a la disposition de tous mes documents",
     icon: <FaRegFileLines />,
     path: "/import_prof"
+  },
+  {
+    title: "ExamCode",
+    description: "Créer un examen avec des questions et des réponses pour evaluer les eleves en temps reel",
+    icon: <FaRegFileLines />,
+    path: "/exam_code"
   },
 ];
 
