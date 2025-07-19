@@ -270,6 +270,21 @@ function Summary({ file }: SummaryProps) {
   const [summary, setSummary] = useState<string>("");
   const [parsedSections, setParsedSections] = useState<SummarySection[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [retryCount, setRetryCount] = useState<number>(0);
+  
+  // Fonction pour tester la connexion API
+  const testApiConnection = async () => {
+    try {
+      console.log('🔍 Test de connexion API...');
+      const testResult = await model.generateContent("Test de connexion");
+      console.log('✅ API fonctionnelle');
+      return true;
+    } catch (error) {
+      console.log('❌ API non accessible:', error);
+      return false;
+    }
+  };
   
   const handleSave = async () => {
     if (!parsedSections.length) {
@@ -370,6 +385,31 @@ function Summary({ file }: SummaryProps) {
     setStatus("loading");
 
     try {
+      console.log('🔄 Début de la génération du résumé...');
+      console.log('📄 Fichier:', {
+        name: file.name,
+        type: file.type,
+        size: file.file.length,
+        preview: file.file.substring(0, 100) + '...'
+      });
+
+      // Vérifier que le fichier est valide
+      if (!file.file || file.file.length === 0) {
+        throw new Error('Fichier vide ou invalide');
+      }
+
+      // Vérifier la taille du fichier (limite approximative : 10MB en base64)
+      if (file.file.length > 10 * 1024 * 1024) {
+        throw new Error('Le fichier est trop volumineux (max 10MB). Veuillez utiliser un fichier plus petit.');
+      }
+
+      // Vérifier le type MIME
+      if (!file.type || (!file.type.includes('pdf') && !file.type.includes('image'))) {
+        throw new Error('Type de fichier non supporté: ' + file.type + '. Utilisez un PDF ou une image.');
+      }
+
+      console.log('🤖 Appel API Google Generative AI...');
+      
       const result = await model.generateContent([
         {
           inlineData: {
@@ -413,11 +453,54 @@ function Summary({ file }: SummaryProps) {
         `
       ]);
       
+      console.log('✅ Réponse reçue de l\'API');
+      
       const responseText = result.response.text();
+      
+      if (!responseText || responseText.trim().length === 0) {
+        throw new Error('Réponse vide de l\'API');
+      }
+
+      console.log('📝 Contenu généré:', responseText.substring(0, 200) + '...');
+      
       setSummary(responseText);
-      setParsedSections(parseSummaryContent(responseText));
+      const sections = parseSummaryContent(responseText);
+      setParsedSections(sections);
+      
+      console.log('🎯 Sections parsées:', sections.length, 'sections trouvées');
+      
       setStatus("success");
-    } catch (error) {
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la génération du résumé:', error);
+      console.error('📊 Détails de l\'erreur:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        cause: error.cause
+      });
+      
+      // Analyser le type d'erreur pour donner un message plus précis
+      let userMessage = "Une erreur inattendue s'est produite. ";
+      
+      if (error.message?.includes('API key') || error.message?.includes('401')) {
+        console.error('🔑 Problème de clé API');
+        userMessage = "Problème d'authentification API. Veuillez réessayer plus tard.";
+      } else if (error.message?.includes('quota') || error.message?.includes('limit') || error.message?.includes('429')) {
+        console.error('📊 Quota API dépassé');
+        userMessage = "Limite de quota atteinte. Veuillez réessayer dans quelques minutes.";
+      } else if (error.message?.includes('network') || error.message?.includes('fetch') || error.message?.includes('NetworkError')) {
+        console.error('🌐 Problème de réseau');
+        userMessage = "Problème de connexion. Vérifiez votre connexion internet et réessayez.";
+      } else if (error.message?.includes('file') || error.message?.includes('type')) {
+        console.error('📄 Problème avec le fichier');
+        userMessage = "Le fichier semble être corrompu ou dans un format non supporté.";
+      } else if (error.message?.includes('size') || error.message?.includes('too large')) {
+        userMessage = "Le fichier est trop volumineux. Essayez avec un fichier plus petit.";
+      } else if (error.message?.includes('timeout')) {
+        userMessage = "La génération a pris trop de temps. Réessayez avec un document plus court.";
+      }
+      
+      setErrorMessage(userMessage);
       setStatus("error");
     }
   }
@@ -478,12 +561,50 @@ function Summary({ file }: SummaryProps) {
       ) : status === "error" ? (
         <div className={styles.errorSection}>
           <p className={styles.error}>❌ Erreur lors de la génération du résumé</p>
-          <button 
-            className={styles.retryButton} 
-            onClick={() => setStatus("idle")}
-          >
-            Réessayer
-          </button>
+          <p className={styles.errorDetail}>{errorMessage}</p>
+          
+          {retryCount >= 2 && (
+            <div className={styles.troubleshootSection}>
+              <h4>💡 Conseils de dépannage :</h4>
+              <ul>
+                <li>✅ Vérifiez votre connexion internet</li>
+                <li>📄 Essayez avec un fichier plus petit (moins de 5MB)</li>
+                <li>🔄 Rechargez la page et réessayez</li>
+                <li>📱 Utilisez un autre format (PDF plutôt qu'image)</li>
+                <li>⏰ Attendez quelques minutes et réessayez</li>
+              </ul>
+            </div>
+          )}
+          
+          <div className={styles.errorActions}>
+            <button 
+              className={styles.retryButton} 
+              onClick={async () => {
+                setRetryCount(prev => prev + 1);
+                console.log(`🔄 Tentative ${retryCount + 1}/3`);
+                
+                // Si c'est le 2ème retry, tester d'abord la connexion API
+                if (retryCount === 1) {
+                  const apiWorks = await testApiConnection();
+                  if (!apiWorks) {
+                    setErrorMessage("L'API Google Generative AI semble indisponible. Veuillez réessayer plus tard.");
+                    return;
+                  }
+                }
+                
+                setStatus("idle");
+                setErrorMessage("");
+              }}
+            >
+              Réessayer {retryCount > 0 ? `(${retryCount}/3)` : ''}
+            </button>
+            <button 
+              className={styles.helpButton} 
+              onClick={() => window.open('https://support.google.com/generativeai/', '_blank')}
+            >
+              Aide
+            </button>
+          </div>
         </div>
       ) : null}
 
