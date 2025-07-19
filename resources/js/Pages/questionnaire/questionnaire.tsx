@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Classes from "../../../css/questionnaire/questionnaire.module.css";
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 interface QuestionData {
   question: string;
@@ -15,6 +16,85 @@ interface FileProps {
 
 interface QuestionnaireProps {
   file: FileProps;
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function generateQuestionnairePdf(questions: QuestionData[], userAnswers: string[], score: number): Promise<Blob> {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595, 842]); // A4
+
+  const { width, height } = page.getSize();
+  const margin = 50;
+
+  const titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const contentFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  // Titre
+  page.drawText('Questionnaire', {
+    x: margin,
+    y: height - margin,
+    size: 24,
+    font: titleFont,
+    color: rgb(0.1, 0.7, 0.3),
+  });
+
+  // Questions et réponses
+  let y = height - margin - 40;
+  const fontSize = 12;
+
+  questions.forEach((q, index) => {
+    if (y < margin + 40) return;
+    
+    // Question
+    page.drawText(`Question ${index + 1}: ${q.question}`, {
+      x: margin,
+      y: y,
+      size: fontSize,
+      font: contentFont,
+      color: rgb(0, 0, 0),
+    });
+    y -= fontSize + 6;
+
+    // Réponse utilisateur
+    page.drawText(`Votre réponse: ${userAnswers[index]}`, {
+      x: margin + 20,
+      y: y,
+      size: fontSize,
+      font: contentFont,
+      color: rgb(0.3, 0.3, 0.3),
+    });
+    y -= fontSize + 6;
+
+    // Bonne réponse
+    page.drawText(`Bonne réponse: ${q.answer}`, {
+      x: margin + 20,
+      y: y,
+      size: fontSize,
+      font: contentFont,
+      color: rgb(0, 0.5, 0),
+    });
+    y -= fontSize + 12;
+  });
+
+  // Score
+  page.drawText(`Score final: ${score}/20`, {
+    x: margin,
+    y: y,
+    size: fontSize + 2,
+    font: titleFont,
+    color: rgb(0.1, 0.7, 0.3),
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
 function Questionnaire({ file }: QuestionnaireProps) {
@@ -69,7 +149,7 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
     setUserAnswers(updated);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let points = 0;
     questions.forEach((q, i) => {
       if (q.answer.trim().toLowerCase() === userAnswers[i].trim().toLowerCase()) {
@@ -78,6 +158,14 @@ Pour chaque question, donne la structure suivante sans Markdown ni texte supplé
     });
     setScore(points);
     setShowSummary(true);
+
+    // Générer et sauvegarder le PDF
+    const pdfBlob = await generateQuestionnairePdf(questions, userAnswers, points);
+    const pdfBase64 = await blobToBase64(pdfBlob);
+    localStorage.setItem('pdfBase64', pdfBase64);
+
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    localStorage.setItem('pdfUrl', pdfUrl);
   };
 
   if (loading) {

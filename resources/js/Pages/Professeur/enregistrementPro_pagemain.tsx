@@ -1,34 +1,35 @@
-import { useState, ChangeEvent } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { FaLink } from "react-icons/fa6";
-import quizzcss from "../../../css/importation_cours/importation_quizz.module.css";
-import QuestionImport from "./enregistrementPro_import"
+import React from 'react';
+import { usePage } from '@inertiajs/react';
+import EnregistrementPage from './enregistrer_fichierprof';
+import QuestionImport from './enregistrementPro_import';
+import { FileObject } from '@/types';
 
-import EnregistrementPage from "@/Pages/Professeur/enregistrer_fichierprof"
-// import Questions from "./Questions";
-// Définis le type du fichier (ajuste si tu as un type plus spécifique)
-type FileData = {
-  type: string;
-  file: string;
-  imageUrl: string;
-}; 
+interface PageProps {
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            email: string;
+        };
+    };
+    [key: string]: any;
+}
 
-export default function ResumerPage() {
-    const [uploadedFile, setUploadedFile] = useState<FileData | null>(null);
+export default function EnregistrementProPageMain() {
+    const { auth } = usePage<PageProps>().props;
+    const [uploadedFile, setUploadedFile] = React.useState<FileObject | null>(null);
 
-  return (
-    <>
-      {
-        uploadedFile ? (
-          <AuthenticatedLayout>
-              <EnregistrementPage uploadedFile={uploadedFile} />
-          </AuthenticatedLayout>
+    const handleFileUpload = (file: FileObject) => {
+        setUploadedFile(file);
+    };
 
-        ) : (
-          <>
-          <QuestionImport setFile={setUploadedFile} />
-          </>
-        )
-      }</>
-  );
+    return (
+        <div>
+            {uploadedFile ? (
+                <EnregistrementPage uploadedFile={uploadedFile} auth={auth} />
+            ) : (
+                <QuestionImport setFile={handleFileUpload} />
+            )}
+        </div>
+    );
 }

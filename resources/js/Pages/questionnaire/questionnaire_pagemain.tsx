@@ -6,6 +6,7 @@ import QuestionImport from "./questionnaire_import"
 import Questionnaire from "./questionnaire";
 import axios from "axios";
 import { usePage } from "@inertiajs/react";
+import { User } from '@/types';
 
 // Définis le type du fichier
 type FileData = {
@@ -19,6 +20,13 @@ export default function ResumerPage() {
     const [uploadedFile, setUploadedFile] = useState<FileData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { auth } = usePage().props;
+    const user = auth.user as User;
+
+    if (!user?.id) {
+        return <div>Veuillez vous connecter</div>;
+    }
+
+    const userId = user.id.toString();
 
     const saveToDatabase = async (fileData: FileData) => {
         try {
@@ -51,7 +59,6 @@ export default function ResumerPage() {
             const fileName = fileData.name;
             const description = 'Document importé via questionnaire';
             const idTypeDoc = '1';
-            const userId = auth.user.id.toString();
             const idMatiere = '1';
             
             // Ajout des données au FormData

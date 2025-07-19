@@ -9,9 +9,11 @@ import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { FaGraduationCap } from "react-icons/fa6";
 import { BiLogInCircle } from "react-icons/bi";
 import { usePage } from '@inertiajs/react';
+import { User } from '@/types';
 
 export default function Accueil() {
   const { auth } = usePage().props;
+  const user = auth.user as User;
 
   return (
     <>
@@ -27,7 +29,7 @@ export default function Accueil() {
         </nav>
         
         <div className={styles.headerIcons}>
-          {auth.user ? (
+          {user ? (
             <div className={styles.icond}>
               <Link href={route('dashboard')} className={styles.dashboardButton}>
                 Dashboard

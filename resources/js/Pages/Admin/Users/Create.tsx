@@ -2,8 +2,27 @@ import React from 'react';
 import { useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import Footer from '@/Components/Footer';
+
+type FormData = {
+    name: string;
+    prenom: string;
+    sexe: string;
+    tel: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    id_role: string;
+    statut: string;
+};
+
+type FormField = {
+    label: string;
+    name: keyof FormData;
+    type?: string;
+};
+
 export default function CreateUser() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm<FormData>({
         name: '',
         prenom: '',
         sexe: '',
@@ -20,19 +39,21 @@ export default function CreateUser() {
         post(route('admin.users.store'));
     };
 
+    const formFields: FormField[] = [
+        { label: 'Nom', name: 'name' },
+        { label: 'Prénom', name: 'prenom' },
+        { label: 'Téléphone', name: 'tel' },
+        { label: 'Email', name: 'email', type: 'email' },
+        { label: 'Mot de passe', name: 'password', type: 'password' },
+        { label: 'Confirmation mot de passe', name: 'password_confirmation', type: 'password' },
+    ];
+
     return (
         <AdminLayout>
             <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-10">
                 <h1 className="text-2xl font-bold mb-6 text-[#87b790] text-center">Créer un utilisateur</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {[
-                        { label: 'Nom', name: 'name' },
-                        { label: 'Prénom', name: 'prenom' },
-                        { label: 'Téléphone', name: 'tel' },
-                        { label: 'Email', name: 'email', type: 'email' },
-                        { label: 'Mot de passe', name: 'password', type: 'password' },
-                        { label: 'Confirmation mot de passe', name: 'password_confirmation', type: 'password' },
-                    ].map(({ label, name, type = 'text' }) => (
+                    {formFields.map(({ label, name, type = 'text' }) => (
                         <div key={name}>
                             <label className="block text-sm font-semibold text-gray-700">{label}</label>
                             <input

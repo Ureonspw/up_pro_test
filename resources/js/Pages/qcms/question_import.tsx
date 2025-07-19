@@ -1,23 +1,40 @@
+import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FaLink } from "react-icons/fa6";
 import quizzcss from "../../../css/importation_cours/importation_quizz.module.css";
-export default function QuestionImport({ setFile }) {
-  async function handleFileUpload(event) {
-    const file = event.target.files[0];
+
+interface FileObject {
+    name: string;
+    content: string;
+    type: string;
+    file: string;
+    imageUrl: string;
+}
+
+interface QuestionImportProps {
+    setFile: (file: FileObject) => void;
+}
+
+export default function QuestionImport({ setFile }: QuestionImportProps) {
+  async function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result.split(",")[1];
-      const fileObj = {
-        type: file.type,
-        file: base64,
-        imageUrl: file.type.includes("pdf")
-          ? "/document-icon.png"
-          : URL.createObjectURL(file),
-      };
-      console.log(fileObj);
-      setFile(fileObj);
+    reader.onload = (e) => {
+      const result = e.target?.result;
+      if (typeof result === 'string') {
+        const base64 = result.split(",")[1];
+        setFile({
+          name: file.name,
+          content: base64,
+          type: file.type,
+          file: base64,
+          imageUrl: file.type.includes("pdf")
+            ? "/document-icon.png"
+            : URL.createObjectURL(file)
+        });
+      }
     };
 
     reader.readAsDataURL(file);

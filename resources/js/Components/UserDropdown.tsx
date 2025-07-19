@@ -1,8 +1,11 @@
+import React from 'react';
 import Dropdown from '@/Components/Dropdown';
 import { usePage } from '@inertiajs/react';
+import { User } from '@/types';
 
 export default function UserDropdown() {
-    const user = usePage().props.auth.user;
+    const { auth } = usePage().props;
+    const user = auth.user as User;
 
     return (
         <div className="flex items-center">
