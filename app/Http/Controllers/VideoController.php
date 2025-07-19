@@ -28,6 +28,15 @@ class VideoController extends Controller
         // Extraire l'ID YouTube de l'URL si nécessaire
         $youtubeId = $this->extractYoutubeId($request->youtube_id);
 
+        // Vérifier si la vidéo existe déjà pour éviter les doublons
+        $existingVideo = Video::where('youtube_id', $youtubeId)
+            ->where('user_id', $request->user_id)
+            ->first();
+
+        if ($existingVideo) {
+            return redirect()->back()->with('error', 'Cette vidéo existe déjà dans votre collection !');
+        }
+
         $video = Video::create([
             'youtube_id' => $youtubeId,
             'titre' => $request->titre,
@@ -47,21 +56,54 @@ class VideoController extends Controller
 
     public function index()
     {
-        $videos = Video::with('user')->get()->map(function ($video) {
-            return [
-                'id' => $video->id,
-                'title' => $video->titre,
-                'thumbnail' => "https://img.youtube.com/vi/{$video->youtube_id}/maxresdefault.jpg",
-                'videoUrl' => "https://www.youtube.com/embed/{$video->youtube_id}?autoplay=1",
-                'description' => $video->description,
-                'author' => $video->user->name,
-                'views' => 0,
-                'date' => $video->created_at->format('Y-m-d')
-            ];
-        });
+        // Nettoyer les doublons potentiels (à exécuter une seule fois)
+        $this->cleanDuplicates();
+
+        $videos = Video::with('user')
+            ->orderBy('created_at', 'desc') // Trier par date de création
+            ->get()
+            ->unique('youtube_id') // Éviter les doublons par youtube_id
+            ->map(function ($video) {
+                return [
+                    'id' => $video->id_video, // Utiliser id_video au lieu de id
+                    'title' => $video->titre,
+                    'thumbnail' => "https://img.youtube.com/vi/{$video->youtube_id}/maxresdefault.jpg",
+                    'videoUrl' => "https://www.youtube.com/embed/{$video->youtube_id}?autoplay=1",
+                    'description' => $video->description,
+                    'author' => $video->user->name,
+                    'views' => 0,
+                    'date' => $video->created_at->format('Y-m-d')
+                ];
+            });
 
         return Inertia::render('videos_page/VideoGallery', [
             'videos' => $videos
         ]);
+    }
+
+    /**
+     * Nettoie les doublons dans la table videos
+     */
+    private function cleanDuplicates()
+    {
+        // Supprimer les doublons basés sur youtube_id et user_id
+        $duplicates = Video::select('youtube_id', 'user_id')
+            ->groupBy('youtube_id', 'user_id')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+
+        foreach ($duplicates as $duplicate) {
+            $videos = Video::where('youtube_id', $duplicate->youtube_id)
+                ->where('user_id', $duplicate->user_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Garder seulement la première vidéo (la plus récente)
+            if ($videos->count() > 1) {
+                $videos->skip(1)->each(function ($video) {
+                    $video->delete();
+                });
+            }
+        }
     }
 } 
