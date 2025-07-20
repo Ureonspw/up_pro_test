@@ -19,7 +19,7 @@ export default function Accueil() {
     <>
     <div className={styles.container}>
       <header className={styles.header}>
-        <div className={styles.logo} >E~Learning</div>
+        <div className={styles.logo} >MaClasse+ IA</div>
 
         <nav className={styles.navbar}>
           <span>Accueil</span>

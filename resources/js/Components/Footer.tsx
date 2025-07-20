@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="footer-section logo-section">
                     <div className="footer-logo">
                         <img src={img} alt="e~Learning Logo" />
-                        <h2>e~Learning</h2>
+                        <h2>MaClasse+ IA</h2>
                     </div>
                     <p>Votre plateforme d'apprentissage en ligne</p>
                 </div>

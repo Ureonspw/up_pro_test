@@ -31,18 +31,7 @@ export default function QCMPageMain() {
                             >
                                 Importation de cours pour le{" "}
                                 <span
-                                    style={{
-                                        color: "#fff",
-                                        background:
-                                            "linear-gradient(90deg, #ff9800, #ff5722)",
-                                        padding: "0.2em 0.7em",
-                                        borderRadius: "1em",
-                                        fontWeight: "bold",
-                                        boxShadow:
-                                            "0 0 8px 2px #ff9800cc, 0 2px 8px #1568ce80",
-                                        border: "2px solid #fff",
-                                        letterSpacing: "0.05em",
-                                    }}
+                                  
                                 >
                                     QCM
                                 </span>
