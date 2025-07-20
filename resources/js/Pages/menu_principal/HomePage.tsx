@@ -5,6 +5,7 @@ import { FaRegFileLines } from "react-icons/fa6";
 import { PiBookOpenTextBold } from "react-icons/pi";
 import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineAcademicCap } from "react-icons/hi2";
+import { FaClipboardCheck } from "react-icons/fa";
 import { Link } from '@inertiajs/react';
 
 interface CardItem {
@@ -38,6 +39,12 @@ const cards: CardItem[] = [
     description: "Révise rapidement pour vérifier si tu maîtrises les notions essentielles",
     icon: <FaRegFileLines />,
     path: "/flashcard"
+  },
+  {
+    title: "Évaluations",
+    description: "Passe tes examens et évaluations en ligne avec un code d'accès",
+    icon: <FaClipboardCheck />,
+    path: "/etudiant/evaluation"
   },
 ];
 

@@ -1,0 +1,509 @@
+.containerboxgeneral {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-image: url("../../assets/photo/quizz/fondflashcard.png");
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+/* Header avec titre et progression */
+.header {
+  height: 18%;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.titleSection {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.examTitle {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 28px;
+  color: #2c3e50;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.progressInfo {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+.progressBar {
+  width: 80%;
+  height: 8px;
+  background-color: #ecf0f1;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Timer visuel avec barre qui se raccourcit */
+.timerSection {
+  height: 15%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top: 0px; /* Décalage vers le haut pour chevaucher le header */
+  position: relative;
+  z-index: 5;
+}
+
+.timerContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timerCircle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+  border: 4px solid rgba(255,255,255,0.9);
+}
+
+.timerText {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  z-index: 2;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.timerProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 360deg);
+  z-index: 1;
+}
+
+.timerProgressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, currentColor 0deg, currentColor 360deg);
+  transition: all 1s ease;
+  z-index: 1;
+}
+
+/* Question */
+.questionSection {
+  height: 18%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.question {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: #2c3e50;
+  text-align: center;
+  background: rgba(255,255,255,0.95);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  max-width: 90%;
+  line-height: 1.4;
+}
+
+/* Réponses */
+.reponsesbox {
+  height: 35%;
+  width: 100%;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  color: #fff;
+}
+
+.reponsesbox1 {
+  height: auto;
+  width: auto;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: start;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  gap: 20px;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+  background-color: #e31b3e;
+  border-radius: 10px;
+  box-shadow: inset -3px -6px 1px #890c21b0, 0 8px 20px rgba(227, 27, 62, 0.3);
+  cursor: pointer;
+}
+
+.reponsesbox2 {
+  height: auto;
+  width: auto;
+  background-color: #1568ce;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: start;
+  gap: 20px;
+  padding: 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  transition: all 0.3s ease-in-out;
+  border-radius: 10px;
+  box-shadow: inset -3px -6px 1px #083e7d99, 0 8px 20px rgba(21, 104, 206, 0.3);
+  cursor: pointer;
+}
+
+.reponsesbox3 {
+  height: auto;
+  width: auto;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: start;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  gap: 20px;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+  background-color: #d89e02;
+  border-radius: 10px;
+  box-shadow: inset -3px -6px 1px #715205b7, 0 8px 20px rgba(216, 158, 2, 0.3);
+  cursor: pointer;
+}
+
+.reponsesbox4 {
+  height: auto;
+  width: auto;
+  background-color: #27890d;
+  border-radius: 10px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: start;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  gap: 20px;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: inset -3px -6px 1px #144c06ae, 0 8px 20px rgba(39, 137, 13, 0.3);
+  cursor: pointer;
+}
+
+.reponsesbox1 samp,
+.reponsesbox2 samp,
+.reponsesbox3 samp,
+.reponsesbox4 samp {
+  font-size: 24px;
+}
+
+.reponsesbox1:hover,
+.reponsesbox2:hover,
+.reponsesbox3:hover,
+.reponsesbox4:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.selected {
+  transform: scale(1.08);
+  box-shadow: 0 0 30px rgba(255,255,255,0.5) !important;
+  border: 3px solid rgba(255,255,255,0.8);
+}
+
+/* Navigation en haut à droite */
+.navigation {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.navButton,
+.nextButton,
+.submitButton {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+}
+
+.navButton {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+}
+
+.navButton:hover {
+  background: linear-gradient(135deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+.nextButton {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.nextButton:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.navButton:disabled,
+.nextButton:disabled,
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Indicateur de réponses sélectionnées */
+.selectionIndicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.95);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Modal de confirmation */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
+}
+
+.cancelButton:hover {
+  background: linear-gradient(135deg, #5a6268, #495057);
+  transform: translateY(-2px);
+}
+
+.confirmButton {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+}
+
+.confirmButton:hover {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  transform: translateY(-2px);
+}
+
+.confirmButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header {
+    height: 22%;
+    padding: 15px;
+  }
+  
+  .examTitle {
+    font-size: 22px;
+  }
+  
+  .progressInfo {
+    font-size: 14px;
+  }
+  
+  .timerSection {
+    height: 18%;
+    margin-top: -25px;
+  }
+  
+  .timerCircle {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .timerText {
+    font-size: 16px;
+  }
+  
+  .questionSection {
+    height: 20%;
+  }
+  
+  .question {
+    font-size: 20px;
+    padding: 20px;
+  }
+  
+  .reponsesbox {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
+    height: 40%;
+  }
+  
+  .reponsesbox1,
+  .reponsesbox2,
+  .reponsesbox3,
+  .reponsesbox4 {
+    font-size: 16px;
+    padding: 20px;
+    gap: 15px;
+  }
+  
+  .navigation {
+    top: 15px;
+    right: 15px;
+    gap: 10px;
+  }
+  
+  .navButton,
+  .nextButton,
+  .submitButton {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .selectionIndicator {
+    bottom: 15px;
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+} 

@@ -44,7 +44,7 @@ const cards: CardItem[] = [
     title: "ExamCode",
     description: "Créer un examen avec des questions et des réponses pour evaluer les eleves en temps reel",
     icon: <FaRegFileLines />,
-    path: "/exam_code"
+    path: "/professeur/examens"
   },
 ];
 

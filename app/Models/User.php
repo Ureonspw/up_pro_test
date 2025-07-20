@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Participation;
 
 class User extends Authenticatable
 {
@@ -55,5 +56,13 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'id_role', 'id_role');
+    }
+
+    /**
+     * Relation avec les participations aux examens
+     */
+    public function participations()
+    {
+        return $this->hasMany(Participation::class, 'id_etudiant');
     }
 }

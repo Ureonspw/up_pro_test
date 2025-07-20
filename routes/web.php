@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\MatiereController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\IAController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\ExamenController;
+use App\Http\Controllers\ParticipationController;
+use App\Http\Controllers\EvaluationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -85,7 +88,32 @@ Route::middleware(['auth'])->prefix('professeur')->name('professeur.')->group(fu
     Route::get('/dashboard', function () {                                               
         return Inertia::render('Professeur/Dashboard');
     })->name('dashboard');
+
+    // Routes pour les examens (côté professeur)
+    Route::get('/examens', [ExamenController::class, 'index'])->name('examens.index');
+    Route::get('/examens/create', [ExamenController::class, 'create'])->name('examens.create');
+    Route::post('/examens', [ExamenController::class, 'store'])->name('examens.store');
+    Route::get('/examens/{examen}', [ExamenController::class, 'show'])->name('examens.show');
+    Route::get('/examens/{examen}/edit', [ExamenController::class, 'edit'])->name('examens.edit');
+    Route::put('/examens/{examen}', [ExamenController::class, 'update'])->name('examens.update');
+    Route::delete('/examens/{examen}', [ExamenController::class, 'destroy'])->name('examens.destroy');
+    Route::get('/examens/{examen}/resultats', [ExamenController::class, 'resultatsProfesseur'])->name('examens.resultats');
+    Route::patch('/examens/{examen}/commencer-evaluation', [ExamenController::class, 'commencerEvaluation'])->name('examens.commencer-evaluation');
+    Route::patch('/examens/{examen}/arreter-evaluation', [ExamenController::class, 'arreterEvaluation'])->name('examens.arreter-evaluation');
+    
+    // Routes pour les questions
+    Route::post('/examens/{examen}/questions', [ExamenController::class, 'storeQuestion'])->name('examens.questions.store');
+    Route::put('/examens/{examen}/questions/{question}', [ExamenController::class, 'updateQuestion'])->name('examens.questions.update');
+    Route::delete('/examens/{examen}/questions/{question}', [ExamenController::class, 'destroyQuestion'])->name('examens.questions.destroy');
+    
+    // Routes pour les réponses
+    Route::delete('/examens/{examen}/questions/{question}/reponses/{reponse}', [ExamenController::class, 'destroyReponse'])->name('examens.questions.reponses.destroy');
 });
+
+// Route pour la page principale des examens (alias pour exam_code)
+Route::get('/exam_code', function () {
+    return redirect()->route('professeur.examens.index');
+})->name('exam_code');
 
 
 
@@ -94,6 +122,14 @@ Route::middleware(['auth'])->prefix('etudiant')->name('etudiant.')->group(functi
     Route::get('/dashboard', function () {
         return Inertia::render('Etudiant/Dashboard');
     })->name('dashboard');
+
+    // Routes pour la participation aux examens (côté étudiant)
+    Route::get('/evaluation', [EvaluationController::class, 'index'])->name('evaluation.index');
+    Route::get('/evaluation/entrer-code', [EvaluationController::class, 'entrerCode'])->name('evaluation.entrerCode');
+    Route::post('/evaluation/verifier-code', [EvaluationController::class, 'verifierCode'])->middleware('test.auth')->name('evaluation.verifierCode');
+    Route::get('/evaluation/passer/{participation}', [EvaluationController::class, 'passer'])->name('evaluation.passer');
+    Route::post('/evaluation/soumettre', [ParticipationController::class, 'soumettre'])->name('evaluation.soumettre');
+    Route::get('/evaluation/resultats/{participation}', [EvaluationController::class, 'resultats'])->name('evaluation.resultats');
 });
 
 
