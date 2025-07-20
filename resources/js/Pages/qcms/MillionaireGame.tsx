@@ -268,9 +268,10 @@ export default function MillionaireGame() {
                         <div className="millionaire-title-glow">
                             <FaTrophy
                                 style={{
-                                    marginRight: 16,
+                                    width: "2.5rem",
+                                    height: "2.5rem",
                                     color: "#FFD700",
-                                    filter: "drop-shadow(0 0 8px #FFD700)",
+                                    filter: "drop-shadow(0 0 12px rgba(255, 215, 0, 0.8))",
                                 }}
                             />
                             Qui veut gagner des millions ?
@@ -290,7 +291,14 @@ export default function MillionaireGame() {
                                 tabIndex={0}
                                 disabled={!!loading}
                             >
-                                <FaGlobeAfrica style={{ color: "#FFD700" }} />{" "}
+                                <FaGlobeAfrica 
+                                    style={{ 
+                                        width: "1.2em", 
+                                        height: "1.2em",
+                                        color: "#FFD700",
+                                        filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))"
+                                    }} 
+                                />
                                 Culture générale
                                 {loading === "general" && <Spinner />}
                             </button>
@@ -308,7 +316,14 @@ export default function MillionaireGame() {
                                 tabIndex={0}
                                 disabled={!!loading}
                             >
-                                <FaLightbulb style={{ color: "#FFD700" }} />{" "}
+                                <FaLightbulb 
+                                    style={{ 
+                                        width: "1.2em", 
+                                        height: "1.2em",
+                                        color: "#FFD700",
+                                        filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))"
+                                    }} 
+                                />
                                 Thème spécifique
                                 {loading === "theme" && <Spinner />}
                             </button>
@@ -328,9 +343,10 @@ export default function MillionaireGame() {
                         <div className="millionaire-title-glow">
                             <FaLightbulb
                                 style={{
-                                    marginRight: 12,
+                                    width: "2.5rem",
+                                    height: "2.5rem",
                                     color: "#FFD700",
-                                    filter: "drop-shadow(0 0 8px #FFD700)",
+                                    filter: "drop-shadow(0 0 12px rgba(255, 215, 0, 0.8))",
                                 }}
                             />
                             Choisis ton thème !

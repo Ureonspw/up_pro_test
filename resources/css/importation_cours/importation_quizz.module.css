@@ -8,6 +8,7 @@
     justify-content: center;
     flex-direction: column;
 }
+
 .title {
     height: 100px;
     width: 100%;
@@ -16,11 +17,11 @@
     justify-content: space-between;
     color: #fff;
     gap: 40px;
-    /* padding-left: 50px; */
     font-size: 2em;
     font-weight: bold;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .importpdf {
     display: none;
 }
@@ -42,11 +43,6 @@
     border: 5px solid #ffffff;
     box-shadow: 0 8px 32px 0 rgba(16, 40, 80, 0.18);
     background: rgba(255, 255, 255, 0.04);
-    transition: box-shadow 0.3s, background 0.3s;
-}
-.containerimportpdf:hover {
-    box-shadow: 0 12px 40px 0 rgba(16, 40, 80, 0.28);
-    background: rgba(255, 255, 255, 0.08);
 }
 
 .importLabelButton {
@@ -63,18 +59,26 @@
     align-items: center;
     gap: 10px;
     margin-top: 1.2rem;
-    transition: background 0.3s, transform 0.2s;
 }
+
 .importLabelButton:hover {
     background: linear-gradient(90deg, #1568ce, #d89e02);
-    transform: scale(1.06);
 }
+
 .containerimportpdf h1 {
     font-size: 1.5em;
     font-weight: bold;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
+
+.containerimportpdf h2 {
+    font-size: 1em;
+    font-weight: 600;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
 .containerimportpdf label {
     display: flex;
     align-content: center;

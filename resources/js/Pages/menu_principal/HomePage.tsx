@@ -1,4 +1,4 @@
-import styles from '../../../css/menu_principal/homepage.module.css';
+import styles from '../../../css/menu_principal/homepageprof.module.css';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { IoChevronForward } from "react-icons/io5";
 import { FaRegFileLines } from "react-icons/fa6";

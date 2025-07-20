@@ -53,28 +53,14 @@ export default function QCMPageMain() {
                                         ? route("millionaire")
                                         : "/millionaire"
                                 }
+                                className="millionaire-icon-link"
                             >
-                                <button
-                                    className={
-                                        "start-button millionaire-btn-glow millionaire-btn-animated"
-                                    }
-                                    style={{
-                                        marginLeft: 64,
-                                        padding: "0.12em 0.35em",
-                                        fontSize: "0.75em",
-                                        minWidth: "unset",
-                                        minHeight: "unset",
-                                    }}
-                                >
-                                    <FaTrophy
-                                        style={{
-                                            marginRight: 3,
-                                            marginBottom: -2,
-                                            fontSize: "0.75em",
-                                        }}
-                                    />
-                                    Qui veut gagner des millions ?
-                                </button>
+                                <div className="millionaire-icon-container">
+                                    <FaTrophy className="millionaire-icon" />
+                                    <span className="millionaire-tooltip">
+                                        Qui veut gagner des millions ?
+                                    </span>
+                                </div>
                             </Link>
                         </div>
                         <QuestionImport setFile={handleFileUpload} />
